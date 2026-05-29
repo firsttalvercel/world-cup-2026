@@ -9,6 +9,11 @@ export async function GET() {
 
   try {
     groups = await getLiveStandings();
+    // If the API returned no valid group-stage data (e.g. pre-tournament TOTAL standings),
+    // fall back to static so the page shows properly organised groups.
+    if (!groups || groups.length < 2) {
+      groups = staticGroups;
+    }
   } catch (err) {
     console.warn("Live API unavailable, falling back to static data:", err);
     groups = staticGroups;

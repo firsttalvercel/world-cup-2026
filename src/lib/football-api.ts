@@ -101,6 +101,7 @@ function mapMatch(m: Record<string, unknown>): Match {
 }
 
 // Map standings → our Group type
+// Returns empty array if the API doesn't have group-stage data yet (triggers static fallback)
 function mapStandings(raw: Record<string, unknown>[]): Group[] {
   const groupMap: Record<string, GroupStanding[]> = {};
 
@@ -110,14 +111,11 @@ function mapStandings(raw: Record<string, unknown>[]): Group[] {
 
     if (!table?.length) continue;
 
-    // Determine group letter
-    let groupId: string;
-    if (groupLabel) {
-      const m = groupLabel.match(/GROUP_([A-L])/);
-      groupId = m?.[1] ?? "?";
-    } else {
-      groupId = "?";
-    }
+    // Only process entries that have a proper GROUP_X label
+    if (!groupLabel) continue;
+    const m = groupLabel.match(/GROUP_([A-L])/);
+    if (!m) continue;
+    const groupId = m[1];
 
     if (!groupMap[groupId]) groupMap[groupId] = [];
 
