@@ -136,22 +136,24 @@ export default function GroupsPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1.5 flex-wrap mb-8">
-        <button onClick={() => setActiveTab("all")}
-          className={cn("px-4 py-2 rounded-xl text-sm font-semibold transition-all",
-            activeTab === "all" ? "bg-brand-600 text-white shadow-lg shadow-brand-600/25"
-              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700")}>
-          All Groups
-        </button>
-        {groups.map((g) => (
-          <button key={g.id} onClick={() => setActiveTab(g.id)}
-            className={cn("px-4 py-2 rounded-xl text-sm font-semibold transition-all",
-              activeTab === g.id ? "bg-brand-600 text-white shadow-lg shadow-brand-600/25"
+      {/* Tabs — horizontal scroll on mobile, no wrapping */}
+      <div className="overflow-x-auto no-scrollbar mb-8">
+        <div className="flex gap-1.5 min-w-max pb-1">
+          <button onClick={() => setActiveTab("all")}
+            className={cn("px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap",
+              activeTab === "all" ? "bg-brand-600 text-white shadow-lg shadow-brand-600/25"
                 : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700")}>
-            {g.id}
+            All Groups
           </button>
-        ))}
+          {groups.map((g) => (
+            <button key={g.id} onClick={() => setActiveTab(g.id)}
+              className={cn("px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap",
+                activeTab === g.id ? "bg-brand-600 text-white shadow-lg shadow-brand-600/25"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700")}>
+              Group {g.id}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading && groups.length === 0 && (

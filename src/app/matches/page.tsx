@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { Search, Filter, X, RefreshCw } from "lucide-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Search, Filter, X, RefreshCw, Star } from "lucide-react";
 import type { Match, MatchStage } from "@/types";
 import {
   groupMatchesByDate,
@@ -9,6 +9,7 @@ import {
   convertToMadridTime,
   getStageBadgeColor,
 } from "@/lib/utils";
+import { useFavorites } from "@/lib/useFavorites";
 import { motion } from "framer-motion";
 
 const allGroups = ["A","B","C","D","E","F","G","H","I","J","K","L"];
@@ -23,6 +24,12 @@ export default function MatchesPage() {
   const [groupFilter, setGroupFilter] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const { favorites, toggle, isFavorite, ready } = useFavorites();
+  const todayRef = useRef<HTMLElement | null>(null);
+  const scrolledToToday = useRef(false);
+
+  const today = new Date().toISOString().split("T")[0];
 
   async function fetchMatches() {
     setLoading(true);
@@ -40,10 +47,19 @@ export default function MatchesPage() {
 
   useEffect(() => {
     fetchMatches();
-    // Auto-refresh every 60s during the tournament
     const interval = setInterval(fetchMatches, 60_000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-scroll to today's section once on first load
+  useEffect(() => {
+    if (!loading && matches.length > 0 && !scrolledToToday.current) {
+      scrolledToToday.current = true;
+      setTimeout(() => {
+        todayRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [loading, matches]);
 
   const allTeams = useMemo(() =>
     Array.from(new Set(matches.flatMap((m) => [m.homeTeam?.name, m.awayTeam?.name]).filter(Boolean))).sort() as string[],
@@ -52,6 +68,9 @@ export default function MatchesPage() {
 
   const filtered = useMemo(() => {
     return matches.filter((m) => {
+      if (favoritesOnly && favorites.size > 0) {
+        if (!favorites.has(m.homeTeam?.name ?? "") && !favorites.has(m.awayTeam?.name ?? "")) return false;
+      }
       if (teamFilter && m.homeTeam?.name !== teamFilter && m.awayTeam?.name !== teamFilter) return false;
       if (groupFilter && m.group !== groupFilter) return false;
       if (stageFilter && m.stage !== stageFilter) return false;
@@ -67,14 +86,18 @@ export default function MatchesPage() {
       }
       return true;
     });
-  }, [matches, search, teamFilter, groupFilter, stageFilter]);
+  }, [matches, search, teamFilter, groupFilter, stageFilter, favoritesOnly, favorites]);
 
   const byDate = groupMatchesByDate(filtered);
   const sortedDates = Object.keys(byDate).sort();
-  const hasFilters = teamFilter || groupFilter || stageFilter || search;
+  const hasFilters = teamFilter || groupFilter || stageFilter || search || favoritesOnly;
 
   function clearFilters() {
-    setSearch(""); setTeamFilter(""); setGroupFilter(""); setStageFilter("");
+    setSearch(""); setTeamFilter(""); setGroupFilter(""); setStageFilter(""); setFavoritesOnly(false);
+  }
+
+  function jumpToToday() {
+    todayRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
@@ -91,9 +114,7 @@ export default function MatchesPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400 mt-1 shrink-0">
-          {lastUpdated && (
-            <span>Updated {lastUpdated.toLocaleTimeString()}</span>
-          )}
+          {lastUpdated && <span className="hidden sm:inline">Updated {lastUpdated.toLocaleTimeString()}</span>}
           <button
             onClick={fetchMatches}
             disabled={loading}
@@ -103,6 +124,29 @@ export default function MatchesPage() {
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
+      </div>
+
+      {/* Quick actions */}
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <button
+          onClick={jumpToToday}
+          className="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 text-xs font-semibold border border-brand-500/20 hover:bg-brand-500/20 transition-colors"
+        >
+          Jump to Today
+        </button>
+        {ready && (
+          <button
+            onClick={() => setFavoritesOnly(!favoritesOnly)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+              favoritesOnly
+                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                : "border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }`}
+          >
+            <Star className={`w-3.5 h-3.5 ${favoritesOnly ? "fill-amber-500 text-amber-500" : ""}`} />
+            My Teams {favorites.size > 0 && `(${favorites.size})`}
+          </button>
+        )}
       </div>
 
       {/* Search + Filters */}
@@ -121,13 +165,13 @@ export default function MatchesPage() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
-              showFilters || hasFilters
+              showFilters || (hasFilters && !favoritesOnly)
                 ? "border-brand-500 bg-brand-500/10 text-brand-500"
                 : "border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
             }`}
           >
             <Filter className="w-4 h-4" /> Filters
-            {hasFilters && <span className="w-2 h-2 rounded-full bg-brand-500" />}
+            {(teamFilter || groupFilter || stageFilter) && <span className="w-2 h-2 rounded-full bg-brand-500" />}
           </button>
           {hasFilters && (
             <button
@@ -166,6 +210,9 @@ export default function MatchesPage() {
 
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
         Showing <span className="font-semibold text-gray-900 dark:text-white">{filtered.length}</span> matches
+        {favoritesOnly && favorites.size === 0 && (
+          <span className="ml-2 text-amber-500">— star teams in the list to use this filter</span>
+        )}
       </p>
 
       {/* Loading skeleton */}
@@ -177,59 +224,113 @@ export default function MatchesPage() {
         </div>
       )}
 
+      {/* Empty state */}
+      {sortedDates.length === 0 && !loading && (
+        <div className="text-center py-20">
+          <div className="text-5xl mb-4">🔍</div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">No matches found</h3>
+          <p className="text-gray-400 text-sm mb-6">Try adjusting your search or filters</p>
+          <button
+            onClick={clearFilters}
+            className="px-5 py-2.5 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 font-semibold text-sm border border-brand-500/20 hover:bg-brand-500/20 transition-colors"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
+
       {/* Match list grouped by date */}
-      {sortedDates.length === 0 && !loading ? (
-        <div className="text-center py-20 text-gray-400">No matches found.</div>
-      ) : (
+      {sortedDates.length > 0 && (
         <div className="space-y-8">
-          {sortedDates.map((date) => (
-            <section key={date}>
-              <div className="sticky top-16 z-10 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm py-2 mb-4 border-b border-gray-100 dark:border-gray-800/60">
-                <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-                  {formatMatchDate(date)}
-                </h2>
-              </div>
+          {sortedDates.map((date) => {
+            const isToday = date === today;
+            const isPast = date < today;
+            return (
+              <section
+                key={date}
+                ref={isToday ? (el) => { todayRef.current = el; } : undefined}
+              >
+                <div className="sticky top-16 z-10 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm py-2 mb-4 border-b border-gray-100 dark:border-gray-800/60">
+                  <div className="flex items-center gap-2">
+                    <h2 className={`text-sm font-bold uppercase tracking-widest ${
+                      isToday ? "text-brand-500" : isPast ? "text-gray-400 dark:text-gray-600" : "text-gray-500 dark:text-gray-400"
+                    }`}>
+                      {isToday ? "Today — " : ""}{formatMatchDate(date)}
+                    </h2>
+                    {isToday && (
+                      <span className="flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-brand-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500" />
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-              {/* Desktop table */}
-              <div className="hidden md:block rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-50 dark:bg-gray-900/60 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      <th className="px-4 py-3 text-left">Time (Madrid)</th>
-                      <th className="px-4 py-3 text-right">Home</th>
-                      <th className="px-4 py-3 text-center w-20">Score</th>
-                      <th className="px-4 py-3 text-left">Away</th>
-                      <th className="px-4 py-3 text-left">Stage</th>
-                      <th className="px-4 py-3 text-left">Matchday</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {byDate[date].map((match) => (
-                      <MatchRow key={match.id} match={match} />
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                {/* Desktop table */}
+                <div className="hidden md:block rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-50 dark:bg-gray-900/60 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left">Time (Madrid)</th>
+                        <th className="px-4 py-3 text-right">Home</th>
+                        <th className="px-4 py-3 text-center w-20">Score</th>
+                        <th className="px-4 py-3 text-left">Away</th>
+                        <th className="px-4 py-3 text-left">Stage</th>
+                        <th className="px-4 py-3 text-left">Matchday</th>
+                        <th className="px-4 py-3 w-8" />
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                      {byDate[date].map((match) => (
+                        <MatchRow key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-              {/* Mobile cards */}
-              <div className="md:hidden space-y-3">
-                {byDate[date].map((match) => (
-                  <MatchCard key={match.id} match={match} />
-                ))}
-              </div>
-            </section>
-          ))}
+                {/* Mobile cards */}
+                <div className="md:hidden space-y-3">
+                  {byDate[date].map((match) => (
+                    <MatchCard key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
 
-function MatchRow({ match }: { match: Match }) {
+function StarButton({ teamName, isFavorite, onToggle }: {
+  teamName: string;
+  isFavorite: (name: string) => boolean;
+  onToggle: (name: string) => void;
+}) {
+  const active = isFavorite(teamName);
+  return (
+    <button
+      onClick={(e) => { e.stopPropagation(); onToggle(teamName); }}
+      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      title={active ? "Remove from favorites" : "Add to favorites"}
+    >
+      <Star className={`w-3.5 h-3.5 transition-colors ${active ? "fill-amber-400 text-amber-400" : "text-gray-300 dark:text-gray-600"}`} />
+    </button>
+  );
+}
+
+function MatchRow({ match, isFavorite, onToggleFavorite }: {
+  match: Match;
+  isFavorite: (name: string) => boolean;
+  onToggleFavorite: (name: string) => void;
+}) {
   const madridTime = convertToMadridTime(match.date, match.time);
+  const homeActive = isFavorite(match.homeTeam?.name ?? "");
+  const awayActive = isFavorite(match.awayTeam?.name ?? "");
 
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+    <tr className={`hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors ${homeActive || awayActive ? "bg-amber-50/40 dark:bg-amber-900/10" : ""}`}>
       <td className="px-4 py-4">
         <span className="font-bold text-brand-500">{madridTime}</span>
         {match.status === "live" && (
@@ -269,24 +370,40 @@ function MatchRow({ match }: { match: Match }) {
       <td className="px-4 py-4 text-gray-500 dark:text-gray-400 text-xs">
         {match.matchday ? `MD ${match.matchday}` : "—"}
       </td>
+      <td className="px-4 py-4">
+        <div className="flex gap-1">
+          {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+          {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+        </div>
+      </td>
     </tr>
   );
 }
 
-function MatchCard({ match }: { match: Match }) {
+function MatchCard({ match, isFavorite, onToggleFavorite }: {
+  match: Match;
+  isFavorite: (name: string) => boolean;
+  onToggleFavorite: (name: string) => void;
+}) {
   const madridTime = convertToMadridTime(match.date, match.time);
+  const homeActive = isFavorite(match.homeTeam?.name ?? "");
+  const awayActive = isFavorite(match.awayTeam?.name ?? "");
 
   return (
-    <div className="match-card">
+    <div className={`match-card ${homeActive || awayActive ? "border-amber-400/40 dark:border-amber-500/30" : ""}`}>
       <div className="flex items-center justify-between mb-3">
         <span className={`group-badge text-xs ${getStageBadgeColor(match.stage)}`}>
           {match.group ? `Group ${match.group}` : match.stage}
         </span>
-        {match.status === "live" && (
-          <span className="flex items-center gap-1 text-xs text-red-400 font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" /> LIVE
-          </span>
-        )}
+        <div className="flex items-center gap-1">
+          {match.status === "live" && (
+            <span className="flex items-center gap-1 text-xs text-red-400 font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" /> LIVE
+            </span>
+          )}
+          {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+          {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+        </div>
       </div>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-1 justify-end text-right">
