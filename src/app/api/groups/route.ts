@@ -19,5 +19,9 @@ export async function GET() {
     groups = staticGroups;
   }
 
-  return NextResponse.json({ groups, total: groups.length });
+  return NextResponse.json({ groups, total: groups.length }, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
+    },
+  });
 }

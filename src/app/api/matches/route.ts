@@ -34,5 +34,12 @@ export async function GET(request: NextRequest) {
   if (city) matches = matches.filter((m) => m.city.toLowerCase().includes(city));
   if (date) matches = matches.filter((m) => m.date === date);
 
-  return NextResponse.json({ matches, total: matches.length });
+  const hasLive = matches.some((m) => m.status === "live");
+  const maxAge = hasLive ? 30 : 3600;
+
+  return NextResponse.json({ matches, total: matches.length }, {
+    headers: {
+      "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=60`,
+    },
+  });
 }

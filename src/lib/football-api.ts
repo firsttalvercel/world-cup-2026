@@ -1,4 +1,5 @@
 import type { Match, Group, GroupStanding, Team, MatchStage } from "@/types";
+import { getCache, setCache, TTL } from "@/lib/cache";
 
 const BASE_URL = "https://api.football-data.org/v4";
 const API_KEY = process.env.FOOTBALL_DATA_API_KEY!;
@@ -159,31 +160,51 @@ function mapStandings(raw: Record<string, unknown>[]): Group[] {
 // ---- Public API ----
 
 export async function getLiveMatches(): Promise<Match[]> {
+  const CACHE_KEY = "live_matches";
+
+  // Determine TTL: shorter during an active match day, longer otherwise
+  const hasLiveMatch = getCache<Match[]>(CACHE_KEY)?.some(
+    (m) => m.status === "live"
+  );
+  const ttl = hasLiveMatch ? TTL.LIVE : TTL.FIXTURES;
+
+  const cached = getCache<Match[]>(CACHE_KEY);
+  if (cached) return cached;
+
   const res = await fetch(
     `${BASE_URL}/competitions/${COMPETITION}/matches?season=${SEASON}`,
-    {
-      headers: HEADERS,
-      next: { revalidate: 60 }, // Re-fetch every 60 seconds
-    }
+    { headers: HEADERS, cache: "no-store" }
   );
 
   if (!res.ok) throw new Error(`football-data API error: ${res.status}`);
 
   const data = await res.json();
-  return (data.matches as Record<string, unknown>[]).map(mapMatch);
+  const matches = (data.matches as Record<string, unknown>[]).map(mapMatch);
+
+  // Re-evaluate TTL now that we have fresh data
+  const isMatchDay = matches.some((m) => m.status === "live");
+  setCache(CACHE_KEY, matches, isMatchDay ? TTL.LIVE : TTL.FIXTURES);
+
+  return matches;
 }
 
 export async function getLiveStandings(): Promise<Group[]> {
+  const CACHE_KEY = "live_standings";
+
+  const cached = getCache<Group[]>(CACHE_KEY);
+  if (cached) return cached;
+
   const res = await fetch(
     `${BASE_URL}/competitions/${COMPETITION}/standings?season=${SEASON}`,
-    {
-      headers: HEADERS,
-      next: { revalidate: 60 },
-    }
+    { headers: HEADERS, cache: "no-store" }
   );
 
   if (!res.ok) throw new Error(`football-data API error: ${res.status}`);
 
   const data = await res.json();
-  return mapStandings(data.standings as Record<string, unknown>[]);
+  const groups = mapStandings(data.standings as Record<string, unknown>[]);
+
+  setCache(CACHE_KEY, groups, TTL.STANDINGS);
+
+  return groups;
 }
