@@ -28,12 +28,12 @@
     { "name": "Ronaldo", "country": "Brazil", "goals": 15, "years": [1994, 1998, 2002, 2006] },
     { "name": "Gerd Muller", "country": "West Germany", "goals": 14, "years": [1970, 1974] },
     { "name": "Just Fontaine", "country": "France", "goals": 13, "years": [1958] },
+    { "name": "Lionel Messi", "country": "Argentina", "goals": 13, "years": [2006, 2010, 2014, 2018, 2022] },
     { "name": "Pelé", "country": "Brazil", "goals": 12, "years": [1958, 1962, 1966, 1970] },
+    { "name": "Kylian Mbappe", "country": "France", "goals": 12, "years": [2018, 2022] },
     { "name": "Sandor Kocsis", "country": "Hungary", "goals": 11, "years": [1954] },
     { "name": "Jurgen Klinsmann", "country": "Germany", "goals": 11, "years": [1990, 1994, 1998] },
-    { "name": "Gabriel Batistuta", "country": "Argentina", "goals": 10, "years": [1994, 1998, 2002] },
-    { "name": "Gary Lineker", "country": "England", "goals": 10, "years": [1986, 1990] },
-    { "name": "Cubillas", "country": "Peru", "goals": 10, "years": [1970, 1978] }
+    { "name": "Gabriel Batistuta", "country": "Argentina", "goals": 10, "years": [1994, 1998, 2002] }
   ],
   "teamStats": [
     { "country": "Brazil", "titles": 5, "finals": 7, "semis": 11, "appearances": 22, "flag": "🇧🇷" },
