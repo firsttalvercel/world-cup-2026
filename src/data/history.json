@@ -1,0 +1,60 @@
+{
+  "winners": [
+    { "year": 1930, "champion": "Uruguay", "runnerUp": "Argentina", "score": "4-2", "host": "Uruguay", "goldenBoot": "Guillermo Stabile", "goldenBootGoals": 8 },
+    { "year": 1934, "champion": "Italy", "runnerUp": "Czechoslovakia", "score": "2-1 (AET)", "host": "Italy", "goldenBoot": "Oldrich Nejedly", "goldenBootGoals": 5 },
+    { "year": 1938, "champion": "Italy", "runnerUp": "Hungary", "score": "4-2", "host": "France", "goldenBoot": "Leônidas", "goldenBootGoals": 7 },
+    { "year": 1950, "champion": "Uruguay", "runnerUp": "Brazil", "score": "2-1", "host": "Brazil", "goldenBoot": "Ademir", "goldenBootGoals": 8 },
+    { "year": 1954, "champion": "West Germany", "runnerUp": "Hungary", "score": "3-2", "host": "Switzerland", "goldenBoot": "Sandor Kocsis", "goldenBootGoals": 11 },
+    { "year": 1958, "champion": "Brazil", "runnerUp": "Sweden", "score": "5-2", "host": "Sweden", "goldenBoot": "Just Fontaine", "goldenBootGoals": 13 },
+    { "year": 1962, "champion": "Brazil", "runnerUp": "Czechoslovakia", "score": "3-1", "host": "Chile", "goldenBoot": "Florian Albert", "goldenBootGoals": 4 },
+    { "year": 1966, "champion": "England", "runnerUp": "West Germany", "score": "4-2 (AET)", "host": "England", "goldenBoot": "Eusebio", "goldenBootGoals": 9 },
+    { "year": 1970, "champion": "Brazil", "runnerUp": "Italy", "score": "4-1", "host": "Mexico", "goldenBoot": "Gerd Muller", "goldenBootGoals": 10 },
+    { "year": 1974, "champion": "West Germany", "runnerUp": "Netherlands", "score": "2-1", "host": "West Germany", "goldenBoot": "Grzegorz Lato", "goldenBootGoals": 7 },
+    { "year": 1978, "champion": "Argentina", "runnerUp": "Netherlands", "score": "3-1 (AET)", "host": "Argentina", "goldenBoot": "Mario Kempes", "goldenBootGoals": 6 },
+    { "year": 1982, "champion": "Italy", "runnerUp": "West Germany", "score": "3-1", "host": "Spain", "goldenBoot": "Paolo Rossi", "goldenBootGoals": 6 },
+    { "year": 1986, "champion": "Argentina", "runnerUp": "West Germany", "score": "3-2", "host": "Mexico", "goldenBoot": "Gary Lineker", "goldenBootGoals": 6 },
+    { "year": 1990, "champion": "West Germany", "runnerUp": "Argentina", "score": "1-0", "host": "Italy", "goldenBoot": "Salvatore Schillaci", "goldenBootGoals": 6 },
+    { "year": 1994, "champion": "Brazil", "runnerUp": "Italy", "score": "0-0 (AET, 3-2 pen)", "host": "USA", "goldenBoot": "Hristo Stoichkov", "goldenBootGoals": 6 },
+    { "year": 1998, "champion": "France", "runnerUp": "Brazil", "score": "3-0", "host": "France", "goldenBoot": "Davor Suker", "goldenBootGoals": 6 },
+    { "year": 2002, "champion": "Brazil", "runnerUp": "Germany", "score": "2-0", "host": "South Korea/Japan", "goldenBoot": "Ronaldo", "goldenBootGoals": 8 },
+    { "year": 2006, "champion": "Italy", "runnerUp": "France", "score": "1-1 (AET, 5-3 pen)", "host": "Germany", "goldenBoot": "Miroslav Klose", "goldenBootGoals": 5 },
+    { "year": 2010, "champion": "Spain", "runnerUp": "Netherlands", "score": "1-0 (AET)", "host": "South Africa", "goldenBoot": "Thomas Muller", "goldenBootGoals": 5 },
+    { "year": 2014, "champion": "Germany", "runnerUp": "Argentina", "score": "1-0 (AET)", "host": "Brazil", "goldenBoot": "James Rodriguez", "goldenBootGoals": 6 },
+    { "year": 2018, "champion": "France", "runnerUp": "Croatia", "score": "4-2", "host": "Russia", "goldenBoot": "Harry Kane", "goldenBootGoals": 6 },
+    { "year": 2022, "champion": "Argentina", "runnerUp": "France", "score": "3-3 (AET, 4-2 pen)", "host": "Qatar", "goldenBoot": "Kylian Mbappe", "goldenBootGoals": 8 }
+  ],
+  "topScorers": [
+    { "name": "Miroslav Klose", "country": "Germany", "goals": 16, "years": [2002, 2006, 2010, 2014] },
+    { "name": "Ronaldo", "country": "Brazil", "goals": 15, "years": [1994, 1998, 2002, 2006] },
+    { "name": "Gerd Muller", "country": "West Germany", "goals": 14, "years": [1970, 1974] },
+    { "name": "Just Fontaine", "country": "France", "goals": 13, "years": [1958] },
+    { "name": "Pelé", "country": "Brazil", "goals": 12, "years": [1958, 1962, 1966, 1970] },
+    { "name": "Sandor Kocsis", "country": "Hungary", "goals": 11, "years": [1954] },
+    { "name": "Jurgen Klinsmann", "country": "Germany", "goals": 11, "years": [1990, 1994, 1998] },
+    { "name": "Gabriel Batistuta", "country": "Argentina", "goals": 10, "years": [1994, 1998, 2002] },
+    { "name": "Gary Lineker", "country": "England", "goals": 10, "years": [1986, 1990] },
+    { "name": "Cubillas", "country": "Peru", "goals": 10, "years": [1970, 1978] }
+  ],
+  "teamStats": [
+    { "country": "Brazil", "titles": 5, "finals": 7, "semis": 11, "appearances": 22, "flag": "🇧🇷" },
+    { "country": "Germany", "titles": 4, "finals": 8, "semis": 13, "appearances": 20, "flag": "🇩🇪" },
+    { "country": "Italy", "titles": 4, "finals": 6, "semis": 8, "appearances": 18, "flag": "🇮🇹" },
+    { "country": "Argentina", "titles": 3, "finals": 5, "semis": 6, "appearances": 18, "flag": "🇦🇷" },
+    { "country": "France", "titles": 2, "finals": 3, "semis": 6, "appearances": 16, "flag": "🇫🇷" },
+    { "country": "Uruguay", "titles": 2, "finals": 3, "semis": 6, "appearances": 14, "flag": "🇺🇾" },
+    { "country": "Spain", "titles": 1, "finals": 1, "semis": 4, "appearances": 16, "flag": "🇪🇸" },
+    { "country": "England", "titles": 1, "finals": 1, "semis": 4, "appearances": 16, "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+    { "country": "Netherlands", "titles": 0, "finals": 3, "semis": 5, "appearances": 11, "flag": "🇳🇱" },
+    { "country": "Hungary", "titles": 0, "finals": 2, "semis": 2, "appearances": 9, "flag": "🇭🇺" }
+  ],
+  "facts": [
+    { "title": "Most goals in a single tournament", "value": "Just Fontaine scored 13 goals for France in 1958 — a record that still stands today." },
+    { "title": "Highest scoring match", "value": "Austria 7-5 Switzerland (1954) — 12 goals, still the highest-scoring World Cup game ever." },
+    { "title": "First World Cup", "value": "Uruguay hosted and won the first FIFA World Cup in 1930, defeating Argentina 4-2 in the final." },
+    { "title": "Youngest scorer", "value": "Pelé became the youngest World Cup goalscorer at 17 years and 239 days in 1958." },
+    { "title": "The Hand of God", "value": "Diego Maradona's infamous handball goal against England in 1986 is one of the most controversial moments in football history." },
+    { "title": "Perfect record", "value": "The 1970 Brazil squad is considered the greatest team ever — they won every match and never conceded from open play in the final." },
+    { "title": "Biggest upset", "value": "North Korea defeated Italy 1-0 in 1966, one of the greatest upsets in World Cup history." },
+    { "title": "Most appearances", "value": "Brazil is the only team to have participated in every single FIFA World Cup (22 tournaments)." }
+  ]
+}
