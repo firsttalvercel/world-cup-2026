@@ -11,6 +11,7 @@ const HEADERS = {
 };
 
 // Country code → flag emoji
+// Includes both ISO and football-data.org TLA variants
 const FLAG_MAP: Record<string, string> = {
   MEX: "🇲🇽", USA: "🇺🇸", CAN: "🇨🇦", BRA: "🇧🇷", ARG: "🇦🇷",
   FRA: "🇫🇷", ENG: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", ESP: "🇪🇸", GER: "🇩🇪", POR: "🇵🇹",
@@ -20,12 +21,22 @@ const FLAG_MAP: Record<string, string> = {
   JPN: "🇯🇵", KOR: "🇰🇷", SAU: "🇸🇦", IRN: "🇮🇷", AUS: "🇦🇺",
   QAT: "🇶🇦", CHN: "🇨🇳", UZB: "🇺🇿", IDN: "🇮🇩", THA: "🇹🇭",
   SRB: "🇷🇸", SUI: "🇨🇭", DNK: "🇩🇰", POL: "🇵🇱", AUT: "🇦🇹",
-  TUR: "🇹🇷", SCO: "🇴󠁧󠁢󠁳󠁣󠁴󠁿", GRE: "🇬🇷", HUN: "🇭🇺", SVK: "🇸🇰",
+  TUR: "🇹🇷", SCO: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", GRE: "🇬🇷", HUN: "🇭🇺", SVK: "🇸🇰",
   CZE: "🇨🇿", ROU: "🇷🇴", UKR: "🇺🇦", SWE: "🇸🇪", NOR: "🇳🇴",
   FIN: "🇫🇮", ITA: "🇮🇹", ECU: "🇪🇨", PER: "🇵🇪", CHI: "🇨🇱",
   CHL: "🇨🇱", VEN: "🇻🇪", BOL: "🇧🇴", PAR: "🇵🇾", CRC: "🇨🇷",
   PAN: "🇵🇦", HON: "🇭🇳", SLV: "🇸🇻", JAM: "🇯🇲", TTO: "🇹🇹",
   CUB: "🇨🇺", HTI: "🇭🇹", NZL: "🇳🇿", ALG: "🇩🇿",
+  // football-data.org TLA variants that differ from ISO codes
+  KSA: "🇸🇦", DEN: "🇩🇰",
+  // Teams reported as missing flags
+  BIH: "🇧🇦",               // Bosnia-Herzegovina
+  HAI: "🇭🇹",               // Haiti (API uses HAI, not HTI)
+  CUW: "🇨🇼",               // Curaçao
+  CPV: "🇨🇻",               // Cape Verde Islands
+  IRQ: "🇮🇶",               // Iraq
+  COD: "🇨🇩", DRC: "🇨🇩",  // Congo DR
+  JOR: "🇯🇴",               // Jordan
 };
 
 function getFlag(tla: string): string {
