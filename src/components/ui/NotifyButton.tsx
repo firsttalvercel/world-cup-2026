@@ -58,12 +58,14 @@ export function NotifyButton({ matchId }: { matchId: string }) {
       setStatus("unsupported");
       return;
     }
+    if (!("Notification" in window)) { setStatus("unsupported"); return; }
+    if (Notification.permission === "denied") { setStatus("denied"); return; }
     if (getSavedSubs().includes(matchId)) setStatus("subscribed");
   }, [matchId]);
 
   useEffect(() => {
     if (!message) return;
-    const t = setTimeout(() => setMessage(null), 3500);
+    const t = setTimeout(() => setMessage(null), 6000);
     return () => clearTimeout(t);
   }, [message]);
 
@@ -73,7 +75,15 @@ export function NotifyButton({ matchId }: { matchId: string }) {
     if (status === "loading") return;
 
     if (status === "denied") {
-      setMessage("Enable notifications in browser settings and try again.");
+      const isIOS = /iphone|ipad/i.test(navigator.userAgent);
+      const isAndroid = /android/i.test(navigator.userAgent);
+      if (isIOS) {
+        setMessage("iOS: Settings → Safari → Advanced → Website Data — or add this site to your Home Screen first.");
+      } else if (isAndroid) {
+        setMessage("Tap the lock icon in your browser address bar → Notifications → Allow, then try again.");
+      } else {
+        setMessage("Click the lock icon in the address bar → Notifications → Allow, then try again.");
+      }
       return;
     }
 
