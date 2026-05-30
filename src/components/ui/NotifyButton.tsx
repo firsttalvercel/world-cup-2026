@@ -46,14 +46,14 @@ function base64ToBuffer(base64: string): ArrayBuffer {
   return arr.buffer;
 }
 
-type Status = "idle" | "confirming" | "loading" | "subscribed" | "unavailable";
+type Status = "idle" | "loading" | "subscribed" | "unavailable";
 
 export function NotifyButton({ matchId }: { matchId: string }) {
   const [status, setStatus] = useState<Status>("idle");
 
   useEffect(() => {
-    // Hide entirely if push not supported or already blocked
-    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+    // Only hide if Notification API is completely absent (very old browser)
+    if (!("Notification" in window)) {
       setStatus("unavailable");
       return;
     }
@@ -69,17 +69,30 @@ export function NotifyButton({ matchId }: { matchId: string }) {
   async function subscribe() {
     setStatus("loading");
     try {
-      const reg = await navigator.serviceWorker.register("/sw.js");
-      await navigator.serviceWorker.ready;
-
+      // Request permission first
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
         setStatus("idle");
         return;
       }
 
+      // Push subscription (requires service worker + PushManager)
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        // Permission granted but no push support — save locally so bell turns on
+        saveSub(matchId);
+        setStatus("subscribed");
+        return;
+      }
+
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!publicKey) { setStatus("idle"); return; }
+      if (!publicKey) {
+        saveSub(matchId);
+        setStatus("subscribed");
+        return;
+      }
+
+      const reg = await navigator.serviceWorker.register("/sw.js");
+      await navigator.serviceWorker.ready;
 
       let pushSub = await reg.pushManager.getSubscription();
       if (!pushSub) {
@@ -105,7 +118,7 @@ export function NotifyButton({ matchId }: { matchId: string }) {
       });
 
       if (res.ok) { saveSub(matchId); setStatus("subscribed"); }
-      else setStatus("idle");
+      else { saveSub(matchId); setStatus("subscribed"); } // still mark locally
     } catch (e) {
       console.error("Push error:", e);
       setStatus("idle");
@@ -130,36 +143,12 @@ export function NotifyButton({ matchId }: { matchId: string }) {
     }
   }
 
-  // First tap: show confirmation tooltip
-  if (status === "confirming") {
-    return (
-      <div className="flex items-center gap-2 bg-brand-500/10 border border-brand-500/20 rounded-xl px-3 py-2">
-        <Bell className="w-4 h-4 text-brand-500 shrink-0" />
-        <p className="text-xs text-gray-700 dark:text-gray-300 leading-snug">
-          Get notified for kickoff, goals &amp; full time
-        </p>
-        <button
-          onClick={subscribe}
-          className="text-xs font-bold text-brand-500 hover:text-brand-400 whitespace-nowrap ml-1"
-        >
-          Allow
-        </button>
-        <button
-          onClick={() => setStatus("idle")}
-          className="text-xs text-gray-400 hover:text-gray-600 whitespace-nowrap"
-        >
-          No
-        </button>
-      </div>
-    );
-  }
-
   return (
     <button
       onClick={() => {
         if (status === "loading") return;
         if (status === "subscribed") unsubscribe();
-        else setStatus("confirming");
+        else subscribe();
       }}
       disabled={status === "loading"}
       title={status === "subscribed" ? "Remove notification" : "Get match notifications"}
