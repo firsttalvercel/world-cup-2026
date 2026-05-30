@@ -18,6 +18,7 @@ import { useTimezoneContext } from "@/lib/TimezoneContext";
 import { useScorePredictions, getPredictionResult, type ScorePrediction } from "@/lib/useScorePredictions";
 import { RedCards } from "@/components/ui/RedCards";
 import { NotifyButton } from "@/components/ui/NotifyButton";
+import { MatchLineup } from "@/components/ui/MatchLineup";
 import { motion } from "framer-motion";
 import type { VoteAggregate } from "@/app/api/votes/route";
 
@@ -545,6 +546,14 @@ function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzRead
           <span className="text-xs text-gray-400">Your prediction</span>
           <PredictionBadge prediction={prediction} actualHome={match.homeScore ?? 0} actualAway={match.awayScore ?? 0} />
         </div>
+      )}
+      {match.homeTeam && match.awayTeam && (
+        <MatchLineup
+          matchId={match.id}
+          homeTeamName={match.homeTeam.name}
+          awayTeamName={match.awayTeam.name}
+          isUpcoming={isUpcoming}
+        />
       )}
     </div>
   );
