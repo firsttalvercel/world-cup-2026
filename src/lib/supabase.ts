@@ -1,10 +1,15 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-// Browser client — uses anon key + RLS
-export const supabase = createClient(url, anonKey);
+// Browser client — uses anon key + RLS (lazy to avoid build-time crash if env vars missing)
+export function getSupabase() {
+  return createClient(url, anonKey);
+}
+
+// Keep named export for backwards compatibility
+export const supabase = url ? createClient(url, anonKey) : null as any;
 
 // Server client — uses service role key, bypasses RLS (API routes only)
 export function createServerSupabase() {
