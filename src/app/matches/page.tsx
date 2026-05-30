@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, Filter, X, RefreshCw, Star, Check } from "lucide-react";
 import type { Match, MatchStage } from "@/types";
 import {
@@ -33,7 +34,8 @@ export default function MatchesPage() {
   const [groupFilter, setGroupFilter] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const searchParams = useSearchParams();
+  const [favoritesOnly, setFavoritesOnly] = useState(() => searchParams.get("favorites") === "1");
   const { favorites, toggle, isFavorite, ready } = useFavorites();
   const { userTz, hour12, ready: tzReady } = useTimezoneContext();
   const { getPrediction, savePrediction, ready: predsReady } = useScorePredictions();
