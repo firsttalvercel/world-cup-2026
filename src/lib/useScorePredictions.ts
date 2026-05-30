@@ -3,6 +3,19 @@
 import { useState, useEffect, useCallback } from "react";
 
 const STORAGE_KEY = "wc2026_score_preds";
+const SESSION_KEY = "wc2026_session_id";
+
+function getSessionId(): string {
+  try {
+    const existing = localStorage.getItem(SESSION_KEY);
+    if (existing) return existing;
+    const id = crypto.randomUUID();
+    localStorage.setItem(SESSION_KEY, id);
+    return id;
+  } catch {
+    return "anon";
+  }
+}
 
 export type ScorePrediction = {
   home: number;
@@ -48,6 +61,16 @@ export function useScorePredictions() {
       } catch {}
       return next;
     });
+
+    // Fire community vote (non-blocking)
+    try {
+      const sessionId = getSessionId();
+      fetch("/api/votes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ matchId, sessionId, homeScore: home, awayScore: away }),
+      }).catch(() => {});
+    } catch {}
   }, []);
 
   const getPrediction = useCallback(

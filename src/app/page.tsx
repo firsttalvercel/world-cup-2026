@@ -4,6 +4,7 @@ import { CountdownTimer } from "@/components/home/CountdownTimer";
 import { StatsCards } from "@/components/home/StatsCards";
 import { NavigationCards } from "@/components/home/NavigationCards";
 import { TodayMatches } from "@/components/home/TodayMatches";
+import { MyTeamsSection } from "@/components/home/MyTeamsSection";
 import { HeroSection } from "@/components/home/HeroSection";
 
 export const metadata: Metadata = {
@@ -28,6 +29,9 @@ export default function HomePage() {
         <section className="flex flex-col items-center">
           <CountdownTimer />
         </section>
+
+        {/* My Teams — only shown if user has favorites */}
+        <MyTeamsSection />
 
         {/* Today / Upcoming Matches */}
         <section>

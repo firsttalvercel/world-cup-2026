@@ -17,7 +17,9 @@ import { useFavorites } from "@/lib/useFavorites";
 import { useTimezoneContext } from "@/lib/TimezoneContext";
 import { useScorePredictions, getPredictionResult, type ScorePrediction } from "@/lib/useScorePredictions";
 import { RedCards } from "@/components/ui/RedCards";
+import { PredictionBar } from "@/components/ui/PredictionBar";
 import { motion } from "framer-motion";
+import type { VoteAggregate } from "@/app/api/votes/route";
 
 const allGroups = ["A","B","C","D","E","F","G","H","I","J","K","L"];
 const allStages: MatchStage[] = ["Group Stage","Round of 32","Round of 16","Quarterfinal","Semifinal","Third Place","Final"];
@@ -35,6 +37,7 @@ export default function MatchesPage() {
   const { favorites, toggle, isFavorite, ready } = useFavorites();
   const { userTz, hour12, ready: tzReady } = useTimezoneContext();
   const { getPrediction, savePrediction, ready: predsReady } = useScorePredictions();
+  const [votes, setVotes] = useState<Record<string, VoteAggregate>>({});
   const todayRef = useRef<HTMLElement | null>(null);
   const scrolledToToday = useRef(false);
 
@@ -57,6 +60,20 @@ export default function MatchesPage() {
   useEffect(() => {
     fetchMatches();
     const interval = setInterval(fetchMatches, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/votes")
+      .then((r) => r.json())
+      .then((d) => setVotes(d.votes ?? {}))
+      .catch(() => {});
+    const interval = setInterval(() => {
+      fetch("/api/votes")
+        .then((r) => r.json())
+        .then((d) => setVotes(d.votes ?? {}))
+        .catch(() => {});
+    }, 30_000);
     return () => clearInterval(interval);
   }, []);
 
@@ -326,7 +343,7 @@ export default function MatchesPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                       {byDate[date].map((match) => (
-                        <MatchRow key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} />
+                        <MatchRow key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} voteData={votes[match.id] ?? null} />
                       ))}
                     </tbody>
                   </table>
@@ -335,7 +352,7 @@ export default function MatchesPage() {
                 {/* Mobile cards */}
                 <div className="md:hidden space-y-3">
                   {byDate[date].map((match) => (
-                    <MatchCard key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} />
+                    <MatchCard key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} voteData={votes[match.id] ?? null} />
                   ))}
                 </div>
               </section>
@@ -364,7 +381,7 @@ function StarButton({ teamName, isFavorite, onToggle }: {
   );
 }
 
-function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction }: {
+function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction, voteData }: {
   match: Match;
   isFavorite: (name: string) => boolean;
   onToggleFavorite: (name: string) => void;
@@ -373,6 +390,7 @@ function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady
   tzReady: boolean;
   prediction: ScorePrediction | null;
   onSavePrediction: (matchId: string, home: number, away: number) => void;
+  voteData: VoteAggregate | null;
 }) {
   const localTime = tzReady ? formatMatchTime(match.date, match.time, userTz, hour12) : "--:--";
   const tzLabel = tzReady ? getTzAbbr(userTz) : "";
@@ -404,7 +422,12 @@ function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady
       </td>
       <td className="px-4 py-4 text-center">
         {isUpcoming ? (
-          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+          <div>
+            <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+            {voteData && match.homeTeam && match.awayTeam && (
+              <PredictionBar votes={voteData} homeName={match.homeTeam.name} awayName={match.awayTeam.name} />
+            )}
+          </div>
         ) : (
           <span className={`font-black text-gray-900 dark:text-white ${match.status === "live" ? "text-red-400" : ""}`}>
             {match.homeScore ?? 0}–{match.awayScore ?? 0}
@@ -442,7 +465,7 @@ function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady
   );
 }
 
-function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction }: {
+function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction, voteData }: {
   match: Match;
   isFavorite: (name: string) => boolean;
   onToggleFavorite: (name: string) => void;
@@ -451,6 +474,7 @@ function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzRead
   tzReady: boolean;
   prediction: ScorePrediction | null;
   onSavePrediction: (matchId: string, home: number, away: number) => void;
+  voteData: VoteAggregate | null;
 }) {
   const localTime = tzReady ? formatMatchTime(match.date, match.time, userTz, hour12) : "--:--";
   const tzLabel = tzReady ? getTzAbbr(userTz) : "";
@@ -507,9 +531,14 @@ function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzRead
 
       {/* Prediction row */}
       {isUpcoming && (
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
-          <span className="text-xs text-gray-400">Your prediction</span>
-          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-400">Your prediction</span>
+            <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+          </div>
+          {voteData && match.homeTeam && match.awayTeam && (
+            <PredictionBar votes={voteData} homeName={match.homeTeam.name} awayName={match.awayTeam.name} />
+          )}
         </div>
       )}
       {isFinished && prediction && (
