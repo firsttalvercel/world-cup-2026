@@ -6,6 +6,7 @@ import { NavigationCards } from "@/components/home/NavigationCards";
 import { TodayMatches } from "@/components/home/TodayMatches";
 import { MyTeamsSection } from "@/components/home/MyTeamsSection";
 import { HeroSection } from "@/components/home/HeroSection";
+import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
 
 export const metadata: Metadata = {
   title: "World Cup 2026 — FIFA World Cup 2026 Companion",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <div className="min-h-screen">
+      <OnboardingModal />
       {/* Hero */}
       <HeroSection />
 
