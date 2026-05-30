@@ -35,11 +35,11 @@ export async function GET(request: NextRequest) {
   if (date) matches = matches.filter((m) => m.date === date);
 
   const hasLive = matches.some((m) => m.status === "live");
-  const maxAge = hasLive ? 30 : 3600;
+  const maxAge = hasLive ? 30 : 300; // 5 min for fixtures (was 1hr — caused stale CDN on Vercel)
 
   return NextResponse.json({ matches, total: matches.length }, {
     headers: {
-      "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=60`,
+      "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=30`,
     },
   });
 }

@@ -21,7 +21,7 @@ export async function GET() {
 
   return NextResponse.json({ groups, total: groups.length }, {
     headers: {
-      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
+      "Cache-Control": "public, s-maxage=120, stale-while-revalidate=30",
     },
   });
 }
