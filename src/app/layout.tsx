@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   },
   description:
     "Your ultimate companion for FIFA World Cup 2026. Live scores, match schedule, group standings, knockout bracket, stadiums, and historical stats.",
+  verification: {
+    google: "lPoZEIyHA8oSNikXk6YZm43VfRkBN9SuJ9_Kv4fMXic",
+  },
   keywords: [
     "FIFA World Cup 2026",
     "World Cup schedule",
