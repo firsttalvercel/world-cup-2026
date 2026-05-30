@@ -5,6 +5,16 @@ const nextConfig: NextConfig = {
     domains: [],
     remotePatterns: [],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "world-cup-2026.up.railway.app" }],
+        destination: "https://world-cup-26.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
