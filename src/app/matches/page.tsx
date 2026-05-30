@@ -1,15 +1,22 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import { Search, Filter, X, RefreshCw, Star } from "lucide-react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { Search, Filter, X, RefreshCw, Star, Check } from "lucide-react";
 import type { Match, MatchStage } from "@/types";
 import {
   groupMatchesByDate,
   formatMatchDate,
-  convertToMadridTime,
+  formatMatchTime,
+  formatRelativeKickoff,
+  getTzAbbr,
+  getTodayInTz,
   getStageBadgeColor,
+  DATA_TZ,
 } from "@/lib/utils";
 import { useFavorites } from "@/lib/useFavorites";
+import { useTimezoneContext } from "@/lib/TimezoneContext";
+import { useScorePredictions, getPredictionResult, type ScorePrediction } from "@/lib/useScorePredictions";
+import { RedCards } from "@/components/ui/RedCards";
 import { motion } from "framer-motion";
 
 const allGroups = ["A","B","C","D","E","F","G","H","I","J","K","L"];
@@ -26,10 +33,12 @@ export default function MatchesPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const { favorites, toggle, isFavorite, ready } = useFavorites();
+  const { userTz, hour12, ready: tzReady } = useTimezoneContext();
+  const { getPrediction, savePrediction, ready: predsReady } = useScorePredictions();
   const todayRef = useRef<HTMLElement | null>(null);
   const scrolledToToday = useRef(false);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getTodayInTz(DATA_TZ);
 
   async function fetchMatches() {
     setLoading(true);
@@ -92,6 +101,22 @@ export default function MatchesPage() {
   const sortedDates = Object.keys(byDate).sort();
   const hasFilters = teamFilter || groupFilter || stageFilter || search || favoritesOnly;
 
+  // Prediction summary across all finished matches
+  const predSummary = useMemo(() => {
+    if (!predsReady) return null;
+    let exact = 0, result = 0, wrong = 0;
+    matches.forEach((m) => {
+      if (m.status !== "finished") return;
+      const pred = getPrediction(m.id);
+      if (!pred) return;
+      const r = getPredictionResult(pred, m.homeScore ?? 0, m.awayScore ?? 0);
+      if (r === "exact") exact++;
+      else if (r === "result") result++;
+      else wrong++;
+    });
+    return { exact, result, wrong, total: exact + result + wrong };
+  }, [matches, predsReady, getPrediction]);
+
   function clearFilters() {
     setSearch(""); setTeamFilter(""); setGroupFilter(""); setStageFilter(""); setFavoritesOnly(false);
   }
@@ -110,7 +135,7 @@ export default function MatchesPage() {
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
             All {matches.length} matches — times shown in{" "}
-            <span className="text-brand-500 font-medium">Spain (Madrid) timezone</span>
+            <span className="text-brand-500 font-medium">{tzReady ? getTzAbbr(userTz) : "your local"} timezone</span>
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400 mt-1 shrink-0">
@@ -125,6 +150,25 @@ export default function MatchesPage() {
           </button>
         </div>
       </div>
+
+      {/* Prediction summary */}
+      {predSummary && predSummary.total > 0 && (
+        <div className="mb-6 flex flex-wrap gap-3 items-center p-4 rounded-2xl bg-brand-500/5 border border-brand-500/15">
+          <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your predictions</span>
+          <div className="flex gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+              {predSummary.exact} exact
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+              {predSummary.result} right result
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+              {predSummary.wrong} wrong
+            </span>
+          </div>
+          <span className="text-xs text-gray-400 ml-auto">{predSummary.total} graded</span>
+        </div>
+      )}
 
       {/* Quick actions */}
       <div className="flex gap-2 mb-4 flex-wrap">
@@ -271,7 +315,7 @@ export default function MatchesPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-gray-50 dark:bg-gray-900/60 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        <th className="px-4 py-3 text-left">Time (Madrid)</th>
+                        <th className="px-4 py-3 text-left">Time</th>
                         <th className="px-4 py-3 text-right">Home</th>
                         <th className="px-4 py-3 text-center w-20">Score</th>
                         <th className="px-4 py-3 text-left">Away</th>
@@ -282,7 +326,7 @@ export default function MatchesPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                       {byDate[date].map((match) => (
-                        <MatchRow key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} />
+                        <MatchRow key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} />
                       ))}
                     </tbody>
                   </table>
@@ -291,7 +335,7 @@ export default function MatchesPage() {
                 {/* Mobile cards */}
                 <div className="md:hidden space-y-3">
                   {byDate[date].map((match) => (
-                    <MatchCard key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} />
+                    <MatchCard key={match.id} match={match} isFavorite={isFavorite} onToggleFavorite={toggle} userTz={userTz} hour12={hour12} tzReady={tzReady} prediction={predsReady ? getPrediction(match.id) : null} onSavePrediction={savePrediction} />
                   ))}
                 </div>
               </section>
@@ -320,45 +364,58 @@ function StarButton({ teamName, isFavorite, onToggle }: {
   );
 }
 
-function MatchRow({ match, isFavorite, onToggleFavorite }: {
+function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction }: {
   match: Match;
   isFavorite: (name: string) => boolean;
   onToggleFavorite: (name: string) => void;
+  userTz: string;
+  hour12: boolean;
+  tzReady: boolean;
+  prediction: ScorePrediction | null;
+  onSavePrediction: (matchId: string, home: number, away: number) => void;
 }) {
-  const madridTime = convertToMadridTime(match.date, match.time);
+  const localTime = tzReady ? formatMatchTime(match.date, match.time, userTz, hour12) : "--:--";
+  const tzLabel = tzReady ? getTzAbbr(userTz) : "";
+  const startsIn = match.status === "upcoming" ? formatRelativeKickoff(match.date, match.time) : "";
   const homeActive = isFavorite(match.homeTeam?.name ?? "");
   const awayActive = isFavorite(match.awayTeam?.name ?? "");
+  const isUpcoming = match.status === "upcoming";
+  const isFinished = match.status === "finished";
 
   return (
     <tr className={`hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors ${homeActive || awayActive ? "bg-amber-50/40 dark:bg-amber-900/10" : ""}`}>
       <td className="px-4 py-4">
-        <span className="font-bold text-brand-500">{madridTime}</span>
+        <span className="font-bold text-brand-500">{localTime}</span>
+        <span className="ml-1 text-xs text-gray-400">{tzLabel}</span>
         {match.status === "live" && (
           <span className="ml-2 inline-flex items-center gap-1 text-xs text-red-400 font-semibold">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" /> LIVE
           </span>
         )}
+        {startsIn && <p className="text-[10px] text-gray-400 mt-0.5">{startsIn}</p>}
       </td>
       <td className="px-4 py-4 text-right">
         {match.homeTeam ? (
           <span className="font-semibold text-gray-900 dark:text-white flex items-center justify-end gap-2">
+            <RedCards count={match.homeRedCards} />
             {match.homeTeam.name} <span className="text-xl">{match.homeTeam.flag}</span>
           </span>
         ) : <span className="text-gray-400 italic">TBD</span>}
       </td>
       <td className="px-4 py-4 text-center">
-        {match.status === "finished" || match.status === "live" ? (
+        {isUpcoming ? (
+          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+        ) : (
           <span className={`font-black text-gray-900 dark:text-white ${match.status === "live" ? "text-red-400" : ""}`}>
             {match.homeScore ?? 0}–{match.awayScore ?? 0}
           </span>
-        ) : (
-          <span className="text-gray-400 text-xs font-medium bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-lg">vs</span>
         )}
       </td>
       <td className="px-4 py-4">
         {match.awayTeam ? (
           <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
             <span className="text-xl">{match.awayTeam.flag}</span> {match.awayTeam.name}
+            <RedCards count={match.awayRedCards} />
           </span>
         ) : <span className="text-gray-400 italic">TBD</span>}
       </td>
@@ -371,23 +428,37 @@ function MatchRow({ match, isFavorite, onToggleFavorite }: {
         {match.matchday ? `MD ${match.matchday}` : "—"}
       </td>
       <td className="px-4 py-4">
-        <div className="flex gap-1">
-          {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
-          {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+        <div className="flex flex-col gap-1.5 items-end">
+          <div className="flex gap-1">
+            {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+            {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+          </div>
+          {isFinished && prediction && (
+            <PredictionBadge prediction={prediction} actualHome={match.homeScore ?? 0} actualAway={match.awayScore ?? 0} />
+          )}
         </div>
       </td>
     </tr>
   );
 }
 
-function MatchCard({ match, isFavorite, onToggleFavorite }: {
+function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady, prediction, onSavePrediction }: {
   match: Match;
   isFavorite: (name: string) => boolean;
   onToggleFavorite: (name: string) => void;
+  userTz: string;
+  hour12: boolean;
+  tzReady: boolean;
+  prediction: ScorePrediction | null;
+  onSavePrediction: (matchId: string, home: number, away: number) => void;
 }) {
-  const madridTime = convertToMadridTime(match.date, match.time);
+  const localTime = tzReady ? formatMatchTime(match.date, match.time, userTz, hour12) : "--:--";
+  const tzLabel = tzReady ? getTzAbbr(userTz) : "";
+  const startsIn = match.status === "upcoming" ? formatRelativeKickoff(match.date, match.time) : "";
   const homeActive = isFavorite(match.homeTeam?.name ?? "");
   const awayActive = isFavorite(match.awayTeam?.name ?? "");
+  const isUpcoming = match.status === "upcoming";
+  const isFinished = match.status === "finished";
 
   return (
     <div className={`match-card ${homeActive || awayActive ? "border-amber-400/40 dark:border-amber-500/30" : ""}`}>
@@ -408,7 +479,7 @@ function MatchCard({ match, isFavorite, onToggleFavorite }: {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-1 justify-end text-right">
           {match.homeTeam ? (
-            <><span className="text-sm font-bold text-gray-900 dark:text-white">{match.homeTeam.name}</span>
+            <><RedCards count={match.homeRedCards} /><span className="text-sm font-bold text-gray-900 dark:text-white">{match.homeTeam.name}</span>
             <span className="text-2xl">{match.homeTeam.flag}</span></>
           ) : <span className="text-gray-400 text-sm italic">TBD</span>}
         </div>
@@ -419,18 +490,109 @@ function MatchCard({ match, isFavorite, onToggleFavorite }: {
             </span>
           ) : (
             <div>
-              <p className="text-xs font-bold text-brand-500">{madridTime}</p>
-              <p className="text-xs text-gray-400">Madrid</p>
+              <p className="text-xs font-bold text-brand-500">{localTime}</p>
+              <p className="text-xs text-gray-400">{tzLabel}</p>
+              {startsIn && <p className="text-[10px] text-gray-400 mt-0.5">{startsIn}</p>}
             </div>
           )}
         </div>
         <div className="flex items-center gap-2 flex-1 text-left">
           {match.awayTeam ? (
             <><span className="text-2xl">{match.awayTeam.flag}</span>
-            <span className="text-sm font-bold text-gray-900 dark:text-white">{match.awayTeam.name}</span></>
+            <span className="text-sm font-bold text-gray-900 dark:text-white">{match.awayTeam.name}</span>
+            <RedCards count={match.awayRedCards} /></>
           ) : <span className="text-gray-400 text-sm italic">TBD</span>}
         </div>
       </div>
+
+      {/* Prediction row */}
+      {isUpcoming && (
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <span className="text-xs text-gray-400">Your prediction</span>
+          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
+        </div>
+      )}
+      {isFinished && prediction && (
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <span className="text-xs text-gray-400">Your prediction</span>
+          <PredictionBadge prediction={prediction} actualHome={match.homeScore ?? 0} actualAway={match.awayScore ?? 0} />
+        </div>
+      )}
     </div>
+  );
+}
+
+// --- Prediction sub-components ---
+
+function ScoreInput({ matchId, prediction, onSave }: {
+  matchId: string;
+  prediction: ScorePrediction | null;
+  onSave: (matchId: string, home: number, away: number) => void;
+}) {
+  const [home, setHome] = useState(prediction?.home?.toString() ?? "");
+  const [away, setAway] = useState(prediction?.away?.toString() ?? "");
+  const [saved, setSaved] = useState(!!prediction);
+
+  function handleSave() {
+    const h = parseInt(home);
+    const a = parseInt(away);
+    if (isNaN(h) || isNaN(a) || h < 0 || a < 0) return;
+    onSave(matchId, h, a);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  function handleChange(setter: (v: string) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      setSaved(false);
+    };
+  }
+
+  const inputClass = "w-7 h-7 text-center text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <input type="number" min="0" max="20" value={home} onChange={handleChange(setHome)} className={inputClass} placeholder="0" />
+      <span className="text-xs text-gray-400 font-bold">–</span>
+      <input type="number" min="0" max="20" value={away} onChange={handleChange(setAway)} className={inputClass} placeholder="0" />
+      <button
+        onClick={handleSave}
+        disabled={home === "" || away === ""}
+        className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all text-xs font-bold disabled:opacity-30 ${
+          saved
+            ? "bg-emerald-500 text-white"
+            : "bg-brand-500/10 text-brand-600 dark:text-brand-400 hover:bg-brand-500/20 border border-brand-500/20"
+        }`}
+      >
+        <Check className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function PredictionBadge({ prediction, actualHome, actualAway }: {
+  prediction: ScorePrediction;
+  actualHome: number;
+  actualAway: number;
+}) {
+  const result = getPredictionResult(prediction, actualHome, actualAway);
+  const styles = {
+    exact: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50",
+    result: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/50",
+    wrong: "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700",
+  };
+  const label = {
+    exact: "Exact",
+    result: "Result",
+    wrong: "Wrong",
+  };
+
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${styles[result]}`}>
+      {prediction.home}–{prediction.away}
+      <span className="opacity-60">·</span>
+      {label[result]}
+    </span>
   );
 }

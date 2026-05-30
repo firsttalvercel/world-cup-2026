@@ -52,7 +52,7 @@ function GroupTable({ group }: { group: Group }) {
             {sorted.map((standing, i) => (
               <tr key={standing.team.code}
                 className={cn("hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors",
-                  i < 2 && "border-l-2 border-emerald-500")}>
+                  i < 2 && "border-l-2 border-emerald-500 bg-emerald-500/5 dark:bg-emerald-900/10")}>
                 <td className="px-4 py-3.5 text-gray-400 text-xs font-medium">{i + 1}</td>
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2.5">

@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 import type { Match } from "@/types";
-import { convertToMadridTime } from "@/lib/utils";
+import { formatMatchTime, getTzAbbr, getTodayInTz, formatRelativeKickoff, DATA_TZ } from "@/lib/utils";
+import { RedCards } from "@/components/ui/RedCards";
+import { useTimezoneContext } from "@/lib/TimezoneContext";
 import Link from "next/link";
 import { ArrowRight, RefreshCw } from "lucide-react";
 
 export function TodayMatches() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const { userTz, hour12, ready } = useTimezoneContext();
 
   async function fetchMatches() {
     try {
@@ -38,7 +41,7 @@ export function TodayMatches() {
     );
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getTodayInTz(DATA_TZ);
   const todayMatches = matches.filter(
     (m) => m.date === today && m.homeTeam && m.awayTeam
   );
@@ -85,17 +88,19 @@ export function TodayMatches() {
       </div>
       <div className="space-y-3">
         {displayed.map((match) => (
-          <MatchRow key={match.id} match={match} />
+          <MatchRow key={match.id} match={match} userTz={userTz} hour12={hour12} tzReady={ready} />
         ))}
       </div>
     </div>
   );
 }
 
-function MatchRow({ match }: { match: Match }) {
+function MatchRow({ match, userTz, hour12, tzReady }: { match: Match; userTz: string; hour12: boolean; tzReady: boolean }) {
   if (!match.homeTeam || !match.awayTeam) return null;
 
-  const madridTime = convertToMadridTime(match.date, match.time);
+  const localTime = tzReady ? formatMatchTime(match.date, match.time, userTz, hour12) : "--:--";
+  const tzLabel = tzReady ? getTzAbbr(userTz) : "";
+  const startsIn = match.status === "upcoming" ? formatRelativeKickoff(match.date, match.time) : "";
   const isLive = match.status === "live";
   const isDone = match.status === "finished";
   const showScore = isLive || isDone;
@@ -110,14 +115,16 @@ function MatchRow({ match }: { match: Match }) {
           </div>
         ) : (
           <>
-            <p className="text-sm font-bold text-brand-500">{madridTime}</p>
-            <p className="text-xs text-gray-400">Madrid</p>
+            <p className="text-sm font-bold text-brand-500">{localTime}</p>
+            <p className="text-xs text-gray-400">{tzLabel}</p>
+            {startsIn && <p className="text-[10px] text-gray-400 mt-0.5">{startsIn}</p>}
           </>
         )}
       </div>
 
       <div className="flex-1 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-1 justify-end">
+          <RedCards count={match.homeRedCards} />
           <span className="text-sm font-semibold text-gray-900 dark:text-white hidden sm:block">
             {match.homeTeam.name}
           </span>
@@ -141,6 +148,7 @@ function MatchRow({ match }: { match: Match }) {
           <span className="text-sm font-semibold text-gray-900 dark:text-white hidden sm:block">
             {match.awayTeam.name}
           </span>
+          <RedCards count={match.awayRedCards} />
         </div>
       </div>
 

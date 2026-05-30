@@ -22,6 +22,8 @@ export interface Match {
   awayTeam: Team | null;
   homeScore?: number;
   awayScore?: number;
+  homeRedCards?: number;
+  awayRedCards?: number;
   group?: string;
   stage: MatchStage;
   stadiumId: string;

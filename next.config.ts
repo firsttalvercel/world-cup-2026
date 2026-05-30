@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
         destination: "https://world-cup-26.com/:path*",
         permanent: true,
       },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "worldcup360.vercel.app" }],
+        destination: "https://world-cup-26.com/:path*",
+        permanent: true,
+      },
     ];
   },
   async headers() {

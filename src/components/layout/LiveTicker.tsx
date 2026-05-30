@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Match } from "@/types";
+import { RedCards } from "@/components/ui/RedCards";
 
 export function LiveTicker() {
   const [liveMatches, setLiveMatches] = useState<Match[]>([]);
@@ -39,9 +40,11 @@ export function LiveTicker() {
             <span key={`${m.id}-${i}`} className="flex items-center gap-2">
               <span>{m.homeTeam?.flag ?? "🏴"}</span>
               <span>{m.homeTeam?.name ?? "TBD"}</span>
+              <RedCards count={m.homeRedCards} />
               <span className="font-black tabular-nums">
                 {m.homeScore ?? 0} – {m.awayScore ?? 0}
               </span>
+              <RedCards count={m.awayRedCards} />
               <span>{m.awayTeam?.name ?? "TBD"}</span>
               <span>{m.awayTeam?.flag ?? "🏴"}</span>
               <span className="opacity-40 mx-2">·</span>

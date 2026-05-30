@@ -163,7 +163,7 @@ export default function CalendarPage() {
 
       <div className="mt-8 p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 rounded-2xl">
         <p className="text-sm text-amber-800 dark:text-amber-300">
-          <strong>Note:</strong> Match times in the calendar are in local stadium time. All times on World Cup 2026 are converted to Spain (Madrid) timezone for your convenience.
+          <strong>Note:</strong> Match times in the calendar are in local stadium time. Times displayed on this site are shown in your local timezone.
         </p>
       </div>
     </div>

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { TimezoneProvider } from "@/lib/TimezoneContext";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { LiveTicker } from "@/components/layout/LiveTicker";
+import { GoalCelebration } from "@/components/ui/GoalCelebration";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://worldcup360.app",
+    url: "https://world-cup-26.com",
     siteName: "World Cup 2026",
     title: "World Cup 2026 — FIFA World Cup 2026",
     description:
@@ -70,10 +72,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className="min-h-screen bg-white dark:bg-gray-950 font-sans antialiased">
         <ThemeProvider>
-          <LiveTicker />
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
+          <TimezoneProvider>
+            <GoalCelebration />
+            <LiveTicker />
+            <Header />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+          </TimezoneProvider>
         </ThemeProvider>
       </body>
     </html>

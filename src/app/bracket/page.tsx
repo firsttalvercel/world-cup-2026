@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { Match } from "@/types";
-import { convertToMadridTime, formatShortDate } from "@/lib/utils";
+import { formatMatchTime, formatShortDate } from "@/lib/utils";
+import { RedCards } from "@/components/ui/RedCards";
+import { useTimezoneContext } from "@/lib/TimezoneContext";
 import { RefreshCw } from "lucide-react";
 
 const ROUND_ORDER = [
@@ -14,9 +16,9 @@ const ROUND_ORDER = [
   { stage: "Final", api: "FINAL", short: "F" },
 ];
 
-function MatchSlot({ match }: { match: Match | null }) {
+function MatchSlot({ match, userTz, hour12 }: { match: Match | null; userTz: string; hour12?: boolean }) {
   const tbd = !match?.homeTeam && !match?.awayTeam;
-  const madridTime = match ? convertToMadridTime(match.date, match.time) : null;
+  const localTime = match ? formatMatchTime(match.date, match.time, userTz, hour12) : null;
   const isLive = match?.status === "live";
   const isDone = match?.status === "finished";
 
@@ -40,6 +42,7 @@ function MatchSlot({ match }: { match: Match | null }) {
           ${tbd ? "text-gray-400 italic" : "text-gray-800 dark:text-gray-200"}`}>
           {match?.homeTeam?.name ?? "TBD"}
         </span>
+        <RedCards count={match?.homeRedCards} />
         {(isDone || isLive) && (
           <span className={`text-xs font-black tabular-nums ${isLive ? "text-red-500" : "text-gray-900 dark:text-white"}`}>
             {match?.homeScore ?? 0}
@@ -57,6 +60,7 @@ function MatchSlot({ match }: { match: Match | null }) {
           ${tbd ? "text-gray-400 italic" : "text-gray-800 dark:text-gray-200"}`}>
           {match?.awayTeam?.name ?? "TBD"}
         </span>
+        <RedCards count={match?.awayRedCards} />
         {(isDone || isLive) && (
           <span className={`text-xs font-black tabular-nums ${isLive ? "text-red-500" : "text-gray-900 dark:text-white"}`}>
             {match?.awayScore ?? 0}
@@ -68,7 +72,7 @@ function MatchSlot({ match }: { match: Match | null }) {
       {match && !isDone && (
         <div className="px-3 py-1 bg-gray-50 dark:bg-gray-800/60 text-center">
           <span className="text-[10px] text-gray-400">
-            {formatShortDate(match.date)} · {madridTime}
+            {formatShortDate(match.date)} · {localTime}
           </span>
         </div>
       )}
@@ -86,6 +90,8 @@ export default function BracketPage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const { userTz, hour12, ready: tzReady } = useTimezoneContext();
+  const tz = tzReady ? userTz : "UTC";
 
   async function fetchMatches() {
     setLoading(true);
@@ -185,11 +191,11 @@ export default function BracketPage() {
                 <div className="flex flex-col" style={{ gap: `${gap}px` }}>
                   {stageMatches.length > 0
                     ? stageMatches.map((match) => (
-                        <MatchSlot key={match.id} match={match} />
+                        <MatchSlot key={match.id} match={match} userTz={tz} hour12={hour12} />
                       ))
                     : // Skeleton placeholders if no data yet
                       Array.from({ length: [16, 8, 4, 2, 1][roundIdx] }).map((_, i) => (
-                        <MatchSlot key={i} match={null} />
+                        <MatchSlot key={i} match={null} userTz={tz} hour12={hour12} />
                       ))}
                 </div>
               </motion.div>

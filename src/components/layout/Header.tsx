@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, Trophy } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { TimezoneSelector } from "@/components/ui/TimezoneSelector";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -57,6 +58,7 @@ export function Header() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            <TimezoneSelector />
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}

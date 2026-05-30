@@ -90,8 +90,18 @@ function mapMatch(m: Record<string, unknown>): Match {
 
   const score = m.score as Record<string, unknown>;
   const ft = score.fullTime as { home: number | null; away: number | null };
-  const homeTeamRaw = m.homeTeam as { name: string; tla: string } | null;
-  const awayTeamRaw = m.awayTeam as { name: string; tla: string } | null;
+  const homeTeamRaw = m.homeTeam as { name: string; tla: string; id?: number } | null;
+  const awayTeamRaw = m.awayTeam as { name: string; tla: string; id?: number } | null;
+
+  // Extract red card counts from bookings array (available on some API tiers)
+  const bookings = (m.bookings as { team?: { id?: number }; card?: string }[]) ?? [];
+  const redCardTypes = new Set(["RED_CARD", "YELLOW_RED_CARD"]);
+  const homeRedCards = homeTeamRaw?.id
+    ? bookings.filter((b) => b.team?.id === homeTeamRaw.id && redCardTypes.has(b.card ?? "")).length
+    : undefined;
+  const awayRedCards = awayTeamRaw?.id
+    ? bookings.filter((b) => b.team?.id === awayTeamRaw.id && redCardTypes.has(b.card ?? "")).length
+    : undefined;
 
   return {
     id: String(m.id),
@@ -101,6 +111,8 @@ function mapMatch(m: Record<string, unknown>): Match {
     awayTeam: mapTeam(awayTeamRaw),
     homeScore: ft.home ?? undefined,
     awayScore: ft.away ?? undefined,
+    homeRedCards: homeRedCards || undefined,
+    awayRedCards: awayRedCards || undefined,
     group: mapGroup((m.group as string) ?? null),
     stage: mapStage(m.stage as string),
     stadiumId: String(m.id), // no venue in free tier

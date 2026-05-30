@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatCountdown, OPENING_MATCH_DATE } from "@/lib/utils";
+import { formatCountdown, formatMatchTime, getTzAbbr, OPENING_MATCH_DATE } from "@/lib/utils";
+import { useTimezoneContext } from "@/lib/TimezoneContext";
 
 const LABELS = ["Days", "Hours", "Minutes", "Seconds"];
 
@@ -41,6 +42,9 @@ function CountUnit({ value, label }: { value: number; label: string }) {
 export function CountdownTimer() {
   const [countdown, setCountdown] = useState<ReturnType<typeof formatCountdown> | null>(null);
   const [started, setStarted] = useState(false);
+  const { userTz, hour12, ready: tzReady } = useTimezoneContext();
+  const localTime = tzReady ? formatMatchTime("2026-06-11", "21:00", userTz, hour12) : "21:00";
+  const tzLabel = tzReady ? getTzAbbr(userTz) : "";
 
   useEffect(() => {
     const now = new Date();
@@ -112,7 +116,7 @@ export function CountdownTimer() {
         June 11, 2026 · Estadio Azteca, Mexico City<br className="sm:hidden" />
         <span className="hidden sm:inline"> · </span>
         <span className="sm:hidden"> · </span>
-        21:00 Madrid
+        {localTime} {tzLabel}
       </p>
     </motion.div>
   );

@@ -1,22 +1,67 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, parseISO } from "date-fns";
-import { toZonedTime, formatInTimeZone } from "date-fns-tz";
+import { fromZonedTime, formatInTimeZone } from "date-fns-tz";
+
+// All times in matches.json are stored in Europe/Madrid (CEST = UTC+2 in summer)
+export const DATA_TZ = "Europe/Madrid";
 import type { Match, MatchStage } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const MADRID_TZ = "Europe/Madrid";
-
-export function convertToMadridTime(dateStr: string, timeStr: string): string {
+export function formatMatchTime(
+  dateStr: string,
+  timeStr: string,
+  timeZone: string,
+  hour12 = false
+): string {
   try {
-    const utcDateStr = `${dateStr}T${timeStr}:00Z`; // API times are UTC
-    const date = new Date(utcDateStr);
-    return formatInTimeZone(date, MADRID_TZ, "HH:mm");
+    const utcDate = fromZonedTime(`${dateStr}T${timeStr}:00`, DATA_TZ);
+    return formatInTimeZone(utcDate, timeZone, hour12 ? "h:mm a" : "HH:mm");
   } catch {
     return timeStr;
+  }
+}
+
+export function formatRelativeKickoff(dateStr: string, timeStr: string): string {
+  try {
+    const utcDate = fromZonedTime(`${dateStr}T${timeStr}:00`, DATA_TZ);
+    const diff = utcDate.getTime() - Date.now();
+    if (diff <= 0) return "";
+    const days = Math.floor(diff / 86_400_000);
+    const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+    const mins = Math.floor((diff % 3_600_000) / 60_000);
+    if (days > 0) return `in ${days}d ${hours}h`;
+    if (hours > 0) return `in ${hours}h ${mins}m`;
+    if (mins > 0) return `in ${mins}m`;
+    return "soon";
+  } catch {
+    return "";
+  }
+}
+
+export function getTzAbbr(timeZone: string): string {
+  try {
+    return (
+      new Intl.DateTimeFormat("en", {
+        timeZone,
+        timeZoneName: "short",
+      })
+        .formatToParts(new Date())
+        .find((p) => p.type === "timeZoneName")?.value ?? timeZone
+    );
+  } catch {
+    return timeZone;
+  }
+}
+
+export function getTodayInTz(timeZone: string): string {
+  try {
+    return formatInTimeZone(new Date(), timeZone, "yyyy-MM-dd");
+  } catch {
+    return new Date().toISOString().split("T")[0];
   }
 }
 
@@ -117,7 +162,8 @@ export function formatCountdown(targetDate: Date): {
   return { days, hours, minutes, seconds };
 }
 
-export const OPENING_MATCH_DATE = new Date("2026-06-11T02:00:00Z");
-export const FINAL_DATE = new Date("2026-08-03T01:00:00Z");
+// 21:00 CEST (Europe/Madrid) = 19:00 UTC
+export const OPENING_MATCH_DATE = new Date("2026-06-11T19:00:00Z");
+export const FINAL_DATE = new Date("2026-07-19T19:00:00Z");
 export const CALENDAR_ICS_URL =
   "https://calendar.google.com/calendar/ical/the007.throwaway%40gmail.com/public/basic.ics";
