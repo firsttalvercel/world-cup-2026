@@ -3,40 +3,40 @@
     "id": "A",
     "name": "Group A",
     "standings": [
-      { "team": { "name": "Brazil", "code": "BRA", "flag": "🇧🇷", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Japan", "code": "JPN", "flag": "🇯🇵", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Ivory Coast", "code": "CIV", "flag": "🇨🇮", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Costa Rica", "code": "CRC", "flag": "🇨🇷", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Mexico", "code": "MEX", "flag": "🇲🇽", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "South Africa", "code": "RSA", "flag": "🇿🇦", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "South Korea", "code": "KOR", "flag": "🇰🇷", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Czech Republic", "code": "CZE", "flag": "🇨🇿", "group": "A" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "B",
     "name": "Group B",
     "standings": [
-      { "team": { "name": "France", "code": "FRA", "flag": "🇫🇷", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Morocco", "code": "MAR", "flag": "🇲🇦", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Colombia", "code": "COL", "flag": "🇨🇴", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Jamaica", "code": "JAM", "flag": "🇯🇲", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Canada", "code": "CAN", "flag": "🇨🇦", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Bosnia and Herzegovina", "code": "BIH", "flag": "🇧🇦", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Qatar", "code": "QAT", "flag": "🇶🇦", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Switzerland", "code": "SUI", "flag": "🇨🇭", "group": "B" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "C",
     "name": "Group C",
     "standings": [
-      { "team": { "name": "England", "code": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Senegal", "code": "SEN", "flag": "🇸🇳", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Ecuador", "code": "ECU", "flag": "🇪🇨", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Iran", "code": "IRN", "flag": "🇮🇷", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Brazil", "code": "BRA", "flag": "🇧🇷", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Morocco", "code": "MAR", "flag": "🇲🇦", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Haiti", "code": "HAI", "flag": "🇭🇹", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Scotland", "code": "SCO", "flag": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "group": "C" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "D",
     "name": "Group D",
     "standings": [
-      { "team": { "name": "Spain", "code": "ESP", "flag": "🇪🇸", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Serbia", "code": "SRB", "flag": "🇷🇸", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "South Korea", "code": "KOR", "flag": "🇰🇷", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Panama", "code": "PAN", "flag": "🇵🇦", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "United States", "code": "USA", "flag": "🇺🇸", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Paraguay", "code": "PAR", "flag": "🇵🇾", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Australia", "code": "AUS", "flag": "🇦🇺", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Turkey", "code": "TUR", "flag": "🇹🇷", "group": "D" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
@@ -44,79 +44,79 @@
     "name": "Group E",
     "standings": [
       { "team": { "name": "Germany", "code": "GER", "flag": "🇩🇪", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Turkey", "code": "TUR", "flag": "🇹🇷", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Saudi Arabia", "code": "KSA", "flag": "🇸🇦", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Honduras", "code": "HON", "flag": "🇭🇳", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Ecuador", "code": "ECU", "flag": "🇪🇨", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Ivory Coast", "code": "CIV", "flag": "🇨🇮", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Curacao", "code": "CUW", "flag": "🇨🇼", "group": "E" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "F",
     "name": "Group F",
     "standings": [
-      { "team": { "name": "Argentina", "code": "ARG", "flag": "🇦🇷", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Uruguay", "code": "URU", "flag": "🇺🇾", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "South Africa", "code": "RSA", "flag": "🇿🇦", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "New Zealand", "code": "NZL", "flag": "🇳🇿", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Netherlands", "code": "NED", "flag": "🇳🇱", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Japan", "code": "JPN", "flag": "🇯🇵", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Sweden", "code": "SWE", "flag": "🇸🇪", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Tunisia", "code": "TUN", "flag": "🇹🇳", "group": "F" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "G",
     "name": "Group G",
     "standings": [
-      { "team": { "name": "Portugal", "code": "POR", "flag": "🇵🇹", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Nigeria", "code": "NGA", "flag": "🇳🇬", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Paraguay", "code": "PAR", "flag": "🇵🇾", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "El Salvador", "code": "SLV", "flag": "🇸🇻", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Belgium", "code": "BEL", "flag": "🇧🇪", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Iran", "code": "IRN", "flag": "🇮🇷", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Egypt", "code": "EGY", "flag": "🇪🇬", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "New Zealand", "code": "NZL", "flag": "🇳🇿", "group": "G" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "H",
     "name": "Group H",
     "standings": [
-      { "team": { "name": "Belgium", "code": "BEL", "flag": "🇧🇪", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Croatia", "code": "CRO", "flag": "🇭🇷", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Egypt", "code": "EGY", "flag": "🇪🇬", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Australia", "code": "AUS", "flag": "🇦🇺", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Spain", "code": "ESP", "flag": "🇪🇸", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Uruguay", "code": "URU", "flag": "🇺🇾", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Saudi Arabia", "code": "KSA", "flag": "🇸🇦", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Cape Verde", "code": "CPV", "flag": "🇨🇻", "group": "H" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "I",
     "name": "Group I",
     "standings": [
-      { "team": { "name": "Netherlands", "code": "NED", "flag": "🇳🇱", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Chile", "code": "CHI", "flag": "🇨🇱", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Cameroon", "code": "CMR", "flag": "🇨🇲", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Qatar", "code": "QAT", "flag": "🇶🇦", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "France", "code": "FRA", "flag": "🇫🇷", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Senegal", "code": "SEN", "flag": "🇸🇳", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Norway", "code": "NOR", "flag": "🇳🇴", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Iraq", "code": "IRQ", "flag": "🇮🇶", "group": "I" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "J",
     "name": "Group J",
     "standings": [
-      { "team": { "name": "Mexico", "code": "MEX", "flag": "🇲🇽", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Poland", "code": "POL", "flag": "🇵🇱", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Ghana", "code": "GHA", "flag": "🇬🇭", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Bolivia", "code": "BOL", "flag": "🇧🇴", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Argentina", "code": "ARG", "flag": "🇦🇷", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Austria", "code": "AUT", "flag": "🇦🇹", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Algeria", "code": "ALG", "flag": "🇩🇿", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Jordan", "code": "JOR", "flag": "🇯🇴", "group": "J" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "K",
     "name": "Group K",
     "standings": [
-      { "team": { "name": "USA", "code": "USA", "flag": "🇺🇸", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Switzerland", "code": "SUI", "flag": "🇨🇭", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Denmark", "code": "DEN", "flag": "🇩🇰", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Algeria", "code": "ALG", "flag": "🇩🇿", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "Portugal", "code": "POR", "flag": "🇵🇹", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Colombia", "code": "COL", "flag": "🇨🇴", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "DR Congo", "code": "COD", "flag": "🇨🇩", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Uzbekistan", "code": "UZB", "flag": "🇺🇿", "group": "K" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   },
   {
     "id": "L",
     "name": "Group L",
     "standings": [
-      { "team": { "name": "Canada", "code": "CAN", "flag": "🇨🇦", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Italy", "code": "ITA", "flag": "🇮🇹", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Austria", "code": "AUT", "flag": "🇦🇹", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
-      { "team": { "name": "Venezuela", "code": "VEN", "flag": "🇻🇪", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
+      { "team": { "name": "England", "code": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Croatia", "code": "CRO", "flag": "🇭🇷", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Ghana", "code": "GHA", "flag": "🇬🇭", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" },
+      { "team": { "name": "Panama", "code": "PAN", "flag": "🇵🇦", "group": "L" }, "played": 0, "won": 0, "drawn": 0, "lost": 0, "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0, "points": 0, "qualified": "pending" }
     ]
   }
 ]
