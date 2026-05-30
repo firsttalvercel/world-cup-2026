@@ -13,11 +13,6 @@ export function useTimezone() {
     const stored = localStorage.getItem(STORAGE_KEY);
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setUserTzState(stored ?? detected);
-    try {
-      const h12 = new Intl.DateTimeFormat(navigator.language, { hour: "numeric" })
-        .resolvedOptions().hour12 ?? false;
-      setHour12(h12);
-    } catch {}
     setReady(true);
   }, []);
 
