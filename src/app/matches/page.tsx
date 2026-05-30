@@ -17,7 +17,6 @@ import { useFavorites } from "@/lib/useFavorites";
 import { useTimezoneContext } from "@/lib/TimezoneContext";
 import { useScorePredictions, getPredictionResult, type ScorePrediction } from "@/lib/useScorePredictions";
 import { RedCards } from "@/components/ui/RedCards";
-import { VoteButtons } from "@/components/ui/VoteButtons";
 import { NotifyButton } from "@/components/ui/NotifyButton";
 import { motion } from "framer-motion";
 import type { VoteAggregate } from "@/app/api/votes/route";
@@ -423,19 +422,7 @@ function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady
       </td>
       <td className="px-4 py-4 text-center">
         {isUpcoming ? (
-          <div className="space-y-2 min-w-[160px]">
-            {match.homeTeam && match.awayTeam && (
-              <VoteButtons
-                matchId={match.id}
-                homeName={match.homeTeam.name}
-                homeFlag={match.homeTeam.flag}
-                awayName={match.awayTeam.name}
-                awayFlag={match.awayTeam.flag}
-                voteData={voteData}
-              />
-            )}
-            <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
-          </div>
+          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
         ) : (
           <span className={`font-black text-gray-900 dark:text-white ${match.status === "live" ? "text-red-400" : ""}`}>
             {match.homeScore ?? 0}–{match.awayScore ?? 0}
@@ -539,21 +526,11 @@ function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzRead
         </div>
       </div>
 
-      {/* Vote + prediction row */}
-      {isUpcoming && match.homeTeam && match.awayTeam && (
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-3">
-          <VoteButtons
-            matchId={match.id}
-            homeName={match.homeTeam.name}
-            homeFlag={match.homeTeam.flag}
-            awayName={match.awayTeam.name}
-            awayFlag={match.awayTeam.flag}
-            voteData={voteData}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400">Exact score prediction</span>
-            <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
-          </div>
+      {/* Prediction row */}
+      {isUpcoming && (
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <span className="text-xs text-gray-400">Exact score prediction</span>
+          <ScoreInput matchId={match.id} prediction={prediction} onSave={onSavePrediction} />
         </div>
       )}
       {isFinished && prediction && (
