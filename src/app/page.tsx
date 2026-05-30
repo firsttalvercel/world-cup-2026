@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "World Cup 2026 — FIFA World Cup 2026 Companion",
   description:
     "Follow every match of FIFA World Cup 2026 across USA, Canada and Mexico. Schedule, groups, bracket, stadiums and history.",
+  alternates: { canonical: "https://world-cup-26.com" },
 };
 
 export default function HomePage() {

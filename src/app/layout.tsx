@@ -63,6 +63,28 @@ export const metadata: Metadata = {
   ],
 };
 
+const tournamentJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SportsEvent",
+  name: "FIFA World Cup 2026",
+  startDate: "2026-06-11",
+  endDate: "2026-07-19",
+  location: {
+    "@type": "Place",
+    name: "USA, Canada, Mexico",
+    address: "North America",
+  },
+  organizer: {
+    "@type": "Organization",
+    name: "FIFA",
+    url: "https://www.fifa.com",
+  },
+  url: "https://world-cup-26.com",
+  description:
+    "The FIFA World Cup 2026 is the 23rd FIFA World Cup, hosted jointly by Canada, Mexico and the United States. 48 teams compete in 104 matches.",
+  sport: "Soccer",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -70,6 +92,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(tournamentJsonLd) }}
+        />
+      </head>
       <body className="min-h-screen bg-white dark:bg-gray-950 font-sans antialiased">
         <ThemeProvider>
           <TimezoneProvider>
