@@ -37,10 +37,15 @@ export async function GET() {
 
   const supabase = createServerSupabase();
 
+  // Rate limit: 10 req/min on free plan. Each team needs 2 requests (search + squad).
+  // Process 4 teams per run to stay safely under the limit.
+  const MAX_PER_RUN = 4;
+
   let synced = 0;
   const errors: string[] = [];
 
   for (const { code, name } of ALL_TEAMS) {
+    if (synced >= MAX_PER_RUN) break;
     // Skip if already synced with squad data
     const { data: existing } = await supabase
       .from("team_squads")
@@ -83,5 +88,5 @@ export async function GET() {
     synced++;
   }
 
-  return NextResponse.json({ synced, total: ALL_TEAMS.length, errors });
+  return NextResponse.json({ synced, total: ALL_TEAMS.length, errors, note: synced === MAX_PER_RUN ? "Rate limit batch — call again to continue" : "Done" });
 }
