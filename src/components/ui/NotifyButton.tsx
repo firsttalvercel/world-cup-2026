@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Loader2, BellOff } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 
 const SESSION_KEY = "wc2026_session_id";
 const SUBS_KEY = "wc2026_notify_subs";
@@ -37,8 +37,7 @@ function getStoredEndpoint(): string | null {
 function storeEndpoint(endpoint: string) {
   try { localStorage.setItem(ENDPOINT_KEY, endpoint); } catch {}
 }
-
-function base64ToUint8Array(base64: string): ArrayBuffer {
+function base64ToBuffer(base64: string): ArrayBuffer {
   const padding = "=".repeat((4 - (base64.length % 4)) % 4);
   const b64 = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
   const raw = atob(b64);
@@ -47,87 +46,46 @@ function base64ToUint8Array(base64: string): ArrayBuffer {
   return arr.buffer;
 }
 
-type Status = "idle" | "loading" | "subscribed" | "denied" | "unsupported" | "error";
+type Status = "idle" | "confirming" | "loading" | "subscribed" | "unavailable";
 
 export function NotifyButton({ matchId }: { matchId: string }) {
   const [status, setStatus] = useState<Status>("idle");
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      setStatus("unsupported");
+    // Hide entirely if push not supported or already blocked
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+      setStatus("unavailable");
       return;
     }
-    if (!("Notification" in window)) { setStatus("unsupported"); return; }
-    if (Notification.permission === "denied") { setStatus("denied"); return; }
+    if (Notification.permission === "denied") {
+      setStatus("unavailable");
+      return;
+    }
     if (getSavedSubs().includes(matchId)) setStatus("subscribed");
   }, [matchId]);
 
-  useEffect(() => {
-    if (!message) return;
-    const t = setTimeout(() => setMessage(null), 6000);
-    return () => clearTimeout(t);
-  }, [message]);
+  if (status === "unavailable") return null;
 
-  if (status === "unsupported") return null;
-
-  async function toggle() {
-    if (status === "loading") return;
-
-    if (status === "denied") {
-      const isIOS = /iphone|ipad/i.test(navigator.userAgent);
-      if (isIOS) {
-        setMessage("On iOS, add this site to your Home Screen first, then try again.");
-      } else {
-        setMessage("Notifications are blocked. Go to your browser Settings → Site Settings → Notifications → find world-cup-26.com → Allow.");
-      }
-      return;
-    }
-
+  async function subscribe() {
     setStatus("loading");
-    setMessage(null);
-
     try {
-      // --- Unsubscribe ---
-      if (status === "subscribed") {
-        const endpoint = getStoredEndpoint();
-        if (endpoint) {
-          await fetch("/api/subscribe", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ endpoint, matchId }),
-          });
-        }
-        removeSub(matchId);
-        setStatus("idle");
-        setMessage("Notification removed.");
-        return;
-      }
-
-      // --- Subscribe ---
       const reg = await navigator.serviceWorker.register("/sw.js");
       await navigator.serviceWorker.ready;
 
       const permission = await Notification.requestPermission();
-      if (permission === "denied") {
-        setStatus("denied");
-        setMessage("Notifications blocked. Enable them in browser settings.");
-        return;
-      }
       if (permission !== "granted") {
         setStatus("idle");
         return;
       }
 
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!publicKey) { setStatus("error"); setMessage("Config error — please try again later."); return; }
+      if (!publicKey) { setStatus("idle"); return; }
 
-      // Get or create push subscription
       let pushSub = await reg.pushManager.getSubscription();
       if (!pushSub) {
         pushSub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: base64ToUint8Array(publicKey),
+          applicationServerKey: base64ToBuffer(publicKey),
         });
       }
 
@@ -146,57 +104,75 @@ export function NotifyButton({ matchId }: { matchId: string }) {
         }),
       });
 
-      if (res.ok) {
-        saveSub(matchId);
-        setStatus("subscribed");
-        setMessage("Done! You'll get notified for kickoff, goals, red cards and full time.");
-      } else {
-        setStatus("error");
-        setMessage("Failed to subscribe. Tap to retry.");
-      }
+      if (res.ok) { saveSub(matchId); setStatus("subscribed"); }
+      else setStatus("idle");
     } catch (e) {
       console.error("Push error:", e);
-      setStatus("error");
-      setMessage("Something went wrong. Tap to retry.");
+      setStatus("idle");
     }
   }
 
-  return (
-    <div className="flex flex-col items-end gap-1">
-      <button
-        onClick={toggle}
-        disabled={status === "loading"}
-        title={
-          status === "subscribed" ? "Tap to remove notifications" :
-          status === "denied" ? "Tap for help" :
-          "Get notified: kickoff, goals, red cards, full time"
-        }
-        className={`p-1.5 rounded-lg transition-all active:scale-95 ${
-          status === "subscribed"
-            ? "text-brand-500 bg-brand-500/10 hover:bg-brand-500/20"
-            : status === "denied"
-            ? "text-amber-500 bg-amber-500/10"
-            : status === "error"
-            ? "text-red-400 bg-red-500/10"
-            : "text-gray-400 hover:text-brand-500 hover:bg-brand-500/10"
-        }`}
-      >
-        {status === "loading" ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : status === "subscribed" ? (
-          <Bell className="w-4 h-4 fill-brand-500" />
-        ) : status === "denied" ? (
-          <BellOff className="w-4 h-4" />
-        ) : (
-          <Bell className="w-4 h-4" />
-        )}
-      </button>
+  async function unsubscribe() {
+    setStatus("loading");
+    try {
+      const endpoint = getStoredEndpoint();
+      if (endpoint) {
+        await fetch("/api/subscribe", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint, matchId }),
+        });
+      }
+      removeSub(matchId);
+      setStatus("idle");
+    } catch {
+      setStatus("subscribed");
+    }
+  }
 
-      {message && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[220px] text-right leading-snug">
-          {message}
+  // First tap: show confirmation tooltip
+  if (status === "confirming") {
+    return (
+      <div className="flex items-center gap-2 bg-brand-500/10 border border-brand-500/20 rounded-xl px-3 py-2">
+        <Bell className="w-4 h-4 text-brand-500 shrink-0" />
+        <p className="text-xs text-gray-700 dark:text-gray-300 leading-snug">
+          Get notified for kickoff, goals &amp; full time
         </p>
-      )}
-    </div>
+        <button
+          onClick={subscribe}
+          className="text-xs font-bold text-brand-500 hover:text-brand-400 whitespace-nowrap ml-1"
+        >
+          Allow
+        </button>
+        <button
+          onClick={() => setStatus("idle")}
+          className="text-xs text-gray-400 hover:text-gray-600 whitespace-nowrap"
+        >
+          No
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => {
+        if (status === "loading") return;
+        if (status === "subscribed") unsubscribe();
+        else setStatus("confirming");
+      }}
+      disabled={status === "loading"}
+      title={status === "subscribed" ? "Remove notification" : "Get match notifications"}
+      className={`p-1.5 rounded-lg transition-all active:scale-95 ${
+        status === "subscribed"
+          ? "text-brand-500 bg-brand-500/10 hover:bg-brand-500/20"
+          : "text-gray-400 hover:text-brand-500 hover:bg-brand-500/10"
+      }`}
+    >
+      {status === "loading"
+        ? <Loader2 className="w-4 h-4 animate-spin" />
+        : <Bell className={`w-4 h-4 ${status === "subscribed" ? "fill-brand-500" : ""}`} />
+      }
+    </button>
   );
 }
