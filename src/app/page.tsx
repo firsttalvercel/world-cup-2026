@@ -7,6 +7,7 @@ import { TodayMatches } from "@/components/home/TodayMatches";
 import { MyTeamsSection } from "@/components/home/MyTeamsSection";
 import { HeroSection } from "@/components/home/HeroSection";
 import { OnboardingModal } from "@/components/onboarding/OnboardingModal";
+import { SmartBanner } from "@/components/home/SmartBanner";
 
 export const metadata: Metadata = {
   title: "World Cup 2026 — FIFA World Cup 2026 Companion",
@@ -20,6 +21,9 @@ export default function HomePage() {
       <OnboardingModal />
       {/* Hero */}
       <HeroSection />
+
+      {/* Smart / personalized alerts */}
+      <SmartBanner />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
         {/* Stats */}
