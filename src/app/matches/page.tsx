@@ -18,6 +18,7 @@ import { useTimezoneContext } from "@/lib/TimezoneContext";
 import { useScorePredictions, getPredictionResult, type ScorePrediction } from "@/lib/useScorePredictions";
 import { RedCards } from "@/components/ui/RedCards";
 import { VoteButtons } from "@/components/ui/VoteButtons";
+import { NotifyButton } from "@/components/ui/NotifyButton";
 import { motion } from "framer-motion";
 import type { VoteAggregate } from "@/app/api/votes/route";
 
@@ -459,9 +460,10 @@ function MatchRow({ match, isFavorite, onToggleFavorite, userTz, hour12, tzReady
       </td>
       <td className="px-4 py-4">
         <div className="flex flex-col gap-1.5 items-end">
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
             {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
             {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+            {isUpcoming && <NotifyButton matchId={match.id} />}
           </div>
           {isFinished && prediction && (
             <PredictionBadge prediction={prediction} actualHome={match.homeScore ?? 0} actualAway={match.awayScore ?? 0} />
@@ -505,6 +507,7 @@ function MatchCard({ match, isFavorite, onToggleFavorite, userTz, hour12, tzRead
           )}
           {match.homeTeam && <StarButton teamName={match.homeTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
           {match.awayTeam && <StarButton teamName={match.awayTeam.name} isFavorite={isFavorite} onToggle={onToggleFavorite} />}
+          {isUpcoming && <NotifyButton matchId={match.id} />}
         </div>
       </div>
       <div className="flex items-center justify-between gap-3">
