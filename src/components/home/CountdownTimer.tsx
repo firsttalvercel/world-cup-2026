@@ -108,8 +108,11 @@ export function CountdownTimer() {
         ))}
       </div>
 
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        June 11, 2026 · Estadio Azteca, Mexico City · 21:00 Madrid
+      <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+        June 11, 2026 · Estadio Azteca, Mexico City<br className="sm:hidden" />
+        <span className="hidden sm:inline"> · </span>
+        <span className="sm:hidden"> · </span>
+        21:00 Madrid
       </p>
     </motion.div>
   );
