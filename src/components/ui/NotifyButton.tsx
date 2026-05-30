@@ -46,25 +46,44 @@ function base64ToBuffer(base64: string): ArrayBuffer {
   return arr.buffer;
 }
 
-type Status = "idle" | "loading" | "subscribed" | "unavailable";
+type Status = "idle" | "loading" | "subscribed" | "unavailable" | "blocked";
 
 export function NotifyButton({ matchId }: { matchId: string }) {
   const [status, setStatus] = useState<Status>("idle");
+  const [showBlockedTip, setShowBlockedTip] = useState(false);
 
   useEffect(() => {
-    // Only hide if Notification API is completely absent (very old browser)
     if (!("Notification" in window)) {
       setStatus("unavailable");
       return;
     }
     if (Notification.permission === "denied") {
-      setStatus("unavailable");
+      setStatus("blocked");
       return;
     }
     if (getSavedSubs().includes(matchId)) setStatus("subscribed");
   }, [matchId]);
 
   if (status === "unavailable") return null;
+
+  if (status === "blocked") {
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setShowBlockedTip((v) => !v)}
+          title="Notifications blocked"
+          className="p-1.5 rounded-lg text-gray-300 dark:text-gray-600"
+        >
+          <Bell className="w-4 h-4" />
+        </button>
+        {showBlockedTip && (
+          <div className="absolute right-0 top-8 z-50 w-56 bg-gray-900 text-white text-xs rounded-xl p-3 shadow-xl leading-relaxed">
+            Notifications are blocked. Tap the lock icon in your address bar → Notifications → Allow.
+          </div>
+        )}
+      </div>
+    );
+  }
 
   async function subscribe() {
     setStatus("loading");
