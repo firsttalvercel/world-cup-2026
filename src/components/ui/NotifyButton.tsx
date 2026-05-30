@@ -76,13 +76,10 @@ export function NotifyButton({ matchId }: { matchId: string }) {
 
     if (status === "denied") {
       const isIOS = /iphone|ipad/i.test(navigator.userAgent);
-      const isAndroid = /android/i.test(navigator.userAgent);
       if (isIOS) {
-        setMessage("iOS: Settings → Safari → Advanced → Website Data — or add this site to your Home Screen first.");
-      } else if (isAndroid) {
-        setMessage("Tap the lock icon in your browser address bar → Notifications → Allow, then try again.");
+        setMessage("On iOS, add this site to your Home Screen first, then try again.");
       } else {
-        setMessage("Click the lock icon in the address bar → Notifications → Allow, then try again.");
+        setMessage("Notifications are blocked. Go to your browser Settings → Site Settings → Notifications → find world-cup-26.com → Allow.");
       }
       return;
     }
@@ -196,7 +193,7 @@ export function NotifyButton({ matchId }: { matchId: string }) {
       </button>
 
       {message && (
-        <p className="text-[10px] text-gray-400 dark:text-gray-500 max-w-[150px] text-right leading-tight animate-fade-in">
+        <p className="text-xs text-gray-500 dark:text-gray-400 max-w-[220px] text-right leading-snug">
           {message}
         </p>
       )}
