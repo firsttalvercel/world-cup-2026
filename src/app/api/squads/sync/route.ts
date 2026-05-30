@@ -39,20 +39,26 @@ export async function GET() {
 
   const supabase = createServerSupabase();
 
-  // Fetch all WC 2026 teams from API-Football to get their IDs
-  const teamsRes = await fetch(`${BASE}/teams?league=${WC_LEAGUE}&season=${WC_SEASON}`, {
+  // Extract team IDs from WC 2026 fixtures (more reliable than /teams endpoint)
+  const fixturesRes = await fetch(`${BASE}/fixtures?league=${WC_LEAGUE}&season=${WC_SEASON}`, {
     headers: apiHeaders(),
   });
-  if (!teamsRes.ok) {
-    return NextResponse.json({ error: "Failed to fetch teams from API" }, { status: 500 });
+  if (!fixturesRes.ok) {
+    return NextResponse.json({ error: "Failed to fetch fixtures from API" }, { status: 500 });
   }
-  const teamsData = await teamsRes.json();
-  const apiTeams: { team: { id: number; name: string } }[] = teamsData.response ?? [];
+  const fixturesData = await fixturesRes.json();
+  const fixtures: { teams: { home: { id: number; name: string }; away: { id: number; name: string } } }[] =
+    fixturesData.response ?? [];
+
+  if (fixtures.length === 0) {
+    return NextResponse.json({ error: "No WC 2026 fixtures found in API — may not be available yet", synced: 0, total: ALL_TEAMS.length });
+  }
 
   // Build map: normalized API team name → API team ID
   const apiTeamMap = new Map<string, number>();
-  for (const { team } of apiTeams) {
-    apiTeamMap.set(normalize(team.name), team.id);
+  for (const { teams } of fixtures) {
+    apiTeamMap.set(normalize(teams.home.name), teams.home.id);
+    apiTeamMap.set(normalize(teams.away.name), teams.away.id);
   }
 
   let synced = 0;
