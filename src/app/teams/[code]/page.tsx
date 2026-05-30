@@ -14,7 +14,16 @@ const groups = groupsData as Group[];
 const allMatches = matchesData as Match[];
 
 const POS_ORDER = ["G", "D", "M", "F"];
-const POS_LABEL: Record<string, string> = { G: "Goalkeeper", D: "Defender", M: "Midfielder", F: "Forward" };
+const POS_LABEL: Record<string, string> = { G: "Goalkeepers", D: "Defenders", M: "Midfielders", F: "Forwards" };
+
+function posKey(position: string): string {
+  const p = position?.toLowerCase() ?? "";
+  if (p.startsWith("g")) return "G";
+  if (p.startsWith("d")) return "D";
+  if (p.startsWith("m")) return "M";
+  if (p.startsWith("f") || p.startsWith("a")) return "F"; // Forward or Attacker
+  return "";
+}
 
 interface SquadPlayer {
   id: number;
@@ -56,7 +65,7 @@ function SquadSection({ teamCode }: { teamCode: string }) {
   }
 
   const grouped = POS_ORDER.reduce<Record<string, SquadPlayer[]>>((acc, pos) => {
-    acc[pos] = players.filter((p) => p.position?.[0] === pos);
+    acc[pos] = players.filter((p) => posKey(p.position) === pos);
     return acc;
   }, {});
 
