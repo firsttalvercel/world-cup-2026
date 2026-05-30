@@ -10,8 +10,8 @@ function CountUnit({ value, label }: { value: number; label: string }) {
   const display = String(value).padStart(2, "0");
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-3xl bg-gray-900 dark:bg-gray-950 border border-gray-700 dark:border-gray-800 shadow-2xl flex items-center justify-center overflow-hidden">
+    <div className="flex flex-col items-center gap-1.5 sm:gap-4">
+      <div className="relative w-16 h-16 sm:w-28 sm:h-28 lg:w-44 lg:h-44 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gray-900 dark:bg-gray-950 border border-gray-700 dark:border-gray-800 shadow-2xl flex items-center justify-center overflow-hidden">
         {/* Gloss top */}
         <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/8 to-transparent pointer-events-none" />
         {/* Split line */}
@@ -24,14 +24,14 @@ function CountUnit({ value, label }: { value: number; label: string }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 32, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="text-6xl sm:text-7xl lg:text-8xl font-black text-white tabular-nums tracking-tight"
+            className="text-3xl sm:text-6xl lg:text-8xl font-black text-white tabular-nums tracking-tight"
           >
             {display}
           </motion.span>
         </AnimatePresence>
       </div>
 
-      <span className="text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+      <span className="text-[9px] sm:text-sm font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gray-500 dark:text-gray-400">
         {label}
       </span>
     </div>
@@ -62,14 +62,14 @@ export function CountdownTimer() {
     return (
       <div className="flex flex-col items-center gap-8">
         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Countdown to Opening Match</p>
-        <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+        <div className="flex items-center gap-2 sm:gap-4 lg:gap-8">
           {LABELS.map((label, i) => (
-            <div key={label} className="flex items-center gap-4 sm:gap-6 lg:gap-8">
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-3xl bg-gray-200 dark:bg-gray-800 animate-pulse" />
-                <span className="text-sm font-bold uppercase tracking-widest text-gray-400">{label}</span>
+            <div key={label} className="flex items-center gap-2 sm:gap-4 lg:gap-8">
+              <div className="flex flex-col items-center gap-1.5 sm:gap-4">
+                <div className="w-16 h-16 sm:w-28 sm:h-28 lg:w-44 lg:h-44 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gray-200 dark:bg-gray-800 animate-pulse" />
+                <span className="text-[9px] sm:text-sm font-bold uppercase tracking-widest text-gray-400">{label}</span>
               </div>
-              {i < 3 && <span className="text-4xl sm:text-5xl font-black text-gray-300 dark:text-gray-700 pb-10">:</span>}
+              {i < 3 && <span className="text-2xl sm:text-4xl lg:text-6xl font-black text-gray-300 dark:text-gray-700 pb-6 sm:pb-10">:</span>}
             </div>
           ))}
         </div>
@@ -95,12 +95,12 @@ export function CountdownTimer() {
         Countdown to Opening Match
       </p>
 
-      <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+      <div className="flex items-center gap-2 sm:gap-4 lg:gap-8">
         {units.map((unit, i) => (
-          <div key={unit.label} className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+          <div key={unit.label} className="flex items-center gap-2 sm:gap-4 lg:gap-8">
             <CountUnit value={unit.value} label={unit.label} />
             {i < 3 && (
-              <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-300 dark:text-gray-700 pb-12 select-none">
+              <span className="text-2xl sm:text-4xl lg:text-6xl font-black text-gray-300 dark:text-gray-700 pb-6 sm:pb-12 select-none">
                 :
               </span>
             )}
