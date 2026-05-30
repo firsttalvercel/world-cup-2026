@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const navItems = [
   { label: "Matches", href: "/matches" },
   { label: "Groups", href: "/groups" },
+  { label: "Teams", href: "/teams" },
   { label: "Bracket", href: "/bracket" },
   { label: "Predict", href: "/predict" },
   { label: "Stadiums", href: "/stadiums" },

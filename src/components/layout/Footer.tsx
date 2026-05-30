@@ -4,6 +4,7 @@ import { Trophy } from "lucide-react";
 const links = [
   { label: "Matches", href: "/matches" },
   { label: "Groups", href: "/groups" },
+  { label: "Teams", href: "/teams" },
   { label: "Bracket", href: "/bracket" },
   { label: "Stadiums", href: "/stadiums" },
   { label: "Calendar", href: "/calendar" },
