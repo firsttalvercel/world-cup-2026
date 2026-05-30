@@ -47,6 +47,7 @@ type Status = "idle" | "loading" | "subscribed" | "denied" | "unsupported" | "er
 
 export function NotifyButton({ matchId }: { matchId: string }) {
   const [status, setStatus] = useState<Status>("idle");
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
@@ -57,15 +58,28 @@ export function NotifyButton({ matchId }: { matchId: string }) {
     if (subs.includes(matchId)) setStatus("subscribed");
   }, [matchId]);
 
+  useEffect(() => {
+    if (!message) return;
+    const t = setTimeout(() => setMessage(null), 3500);
+    return () => clearTimeout(t);
+  }, [message]);
+
   if (status === "unsupported") return null;
 
   async function toggle() {
     if (status === "loading") return;
+
+    // If denied, show instructions instead of retrying
+    if (status === "denied") {
+      setMessage("Enable notifications in your browser settings, then try again.");
+      return;
+    }
+
     setStatus("loading");
+    setMessage(null);
 
     try {
       if (status === "subscribed") {
-        // Unsubscribe
         const reg = await navigator.serviceWorker.getRegistration("/sw.js");
         const sub = reg ? await reg.pushManager.getSubscription() : null;
         if (sub) {
@@ -77,6 +91,7 @@ export function NotifyButton({ matchId }: { matchId: string }) {
         }
         removeSub(matchId);
         setStatus("idle");
+        setMessage("Notification removed.");
         return;
       }
 
@@ -86,12 +101,20 @@ export function NotifyButton({ matchId }: { matchId: string }) {
 
       // Request permission
       const permission = await Notification.requestPermission();
-      if (permission === "denied") { setStatus("denied"); return; }
-      if (permission !== "granted") { setStatus("idle"); return; }
+      if (permission === "denied") {
+        setStatus("denied");
+        setMessage("Notifications blocked. Enable them in browser settings.");
+        return;
+      }
+      if (permission !== "granted") {
+        setStatus("idle");
+        setMessage("Permission not granted.");
+        return;
+      }
 
       // Subscribe
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-      if (!publicKey) { setStatus("error"); return; }
+      if (!publicKey) { setStatus("error"); setMessage("Configuration error."); return; }
 
       const padding = "=".repeat((4 - (publicKey.length % 4)) % 4);
       const base64 = (publicKey + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -121,48 +144,54 @@ export function NotifyButton({ matchId }: { matchId: string }) {
       if (res.ok) {
         saveSub(matchId);
         setStatus("subscribed");
+        setMessage("You'll be notified 30 min before kickoff.");
       } else {
         setStatus("error");
+        setMessage("Failed to subscribe. Tap to retry.");
       }
     } catch (e) {
       console.error("Push subscription error:", e);
       setStatus("error");
+      setMessage("Something went wrong. Tap to retry.");
     }
   }
 
-  const titles: Record<Status, string> = {
-    idle: "Notify me 30 min before kickoff",
-    subscribed: "Subscribed — click to remove",
-    denied: "Notifications blocked in browser settings",
-    error: "Failed — click to retry",
-    loading: "...",
-    unsupported: "",
-  };
-
   return (
-    <button
-      onClick={toggle}
-      disabled={status === "loading" || status === "denied"}
-      title={titles[status]}
-      className={`p-1.5 rounded-lg transition-all ${
-        status === "subscribed"
-          ? "text-brand-500 bg-brand-500/10 hover:bg-brand-500/20"
-          : status === "denied"
-          ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
-          : status === "error"
-          ? "text-red-400 hover:bg-red-500/10"
-          : "text-gray-400 hover:text-brand-500 hover:bg-brand-500/10"
-      }`}
-    >
-      {status === "loading" ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
-      ) : status === "subscribed" ? (
-        <Bell className="w-4 h-4 fill-brand-500" />
-      ) : status === "denied" ? (
-        <BellOff className="w-4 h-4" />
-      ) : (
-        <Bell className="w-4 h-4" />
+    <div className="flex flex-col items-end gap-1">
+      <button
+        onClick={toggle}
+        disabled={status === "loading"}
+        title={
+          status === "subscribed" ? "Tap to remove notification" :
+          status === "denied" ? "Tap for help" :
+          "Notify me 30 min before kickoff"
+        }
+        className={`p-1.5 rounded-lg transition-all ${
+          status === "subscribed"
+            ? "text-brand-500 bg-brand-500/10 active:bg-brand-500/30"
+            : status === "denied"
+            ? "text-amber-500 bg-amber-500/10 active:bg-amber-500/20"
+            : status === "error"
+            ? "text-red-400 bg-red-500/10 active:bg-red-500/20"
+            : "text-gray-400 active:bg-brand-500/10 active:text-brand-500"
+        }`}
+      >
+        {status === "loading" ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : status === "subscribed" ? (
+          <Bell className="w-4 h-4 fill-brand-500" />
+        ) : status === "denied" ? (
+          <BellOff className="w-4 h-4" />
+        ) : (
+          <Bell className="w-4 h-4" />
+        )}
+      </button>
+
+      {message && (
+        <p className="text-[10px] text-gray-400 dark:text-gray-500 max-w-[140px] text-right leading-tight">
+          {message}
+        </p>
       )}
-    </button>
+    </div>
   );
 }
