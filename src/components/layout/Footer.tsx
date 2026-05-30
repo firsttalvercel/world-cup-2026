@@ -81,9 +81,14 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <p>© 2026 World Cup 2026. Data shown is illustrative and for planning purposes.</p>
-          <p>FIFA World Cup™ is a trademark of FIFA. This is an unofficial fan site.</p>
+        <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-800 space-y-4 text-xs text-gray-400 dark:text-gray-500">
+          <p className="leading-relaxed">
+            This site stores your preferences (favourite teams, timezone, notification subscriptions) locally in your browser using localStorage. No personal data is collected, transmitted to third parties, or used for advertising. Preferences can be cleared at any time by clearing your browser data. Push notifications, if enabled, are processed via the Web Push protocol and may involve your browser vendor&apos;s push service (e.g. Google FCM for Chrome, Mozilla for Firefox). This site uses no cookies other than those strictly necessary for functionality.
+          </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <p>© 2026 World Cup 2026. An unofficial fan site. Not affiliated with or endorsed by FIFA.</p>
+            <p>FIFA World Cup™ is a registered trademark of FIFA.</p>
+          </div>
         </div>
       </div>
     </footer>
